@@ -9,10 +9,9 @@ const page = () => {
                 <HeaderPage />
             </div>
 
-            <div className='min-h-50'>
+            <div className='min-h-75 px-5 md:px-10 xl:px-65 py-5 xl:py-10'>
                 <ContentProfile />
             </div>
-
         </div>
     )
 }
