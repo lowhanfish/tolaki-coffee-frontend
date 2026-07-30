@@ -28,11 +28,23 @@ const HomeHeader = () => {
                                 <p>diolah dengan hati, untuk cita rasa terbaik.</p>
                             </div>
                         </div>
-                        <div className='flex flex-col md:flex-row gap-3 pt-5 px-5 md:px-0'>
-                            <button className='btn-normal rounded-md'>
+                        <div className='flex flex-col md:flex-row gap-3 pt-5 px-5 md:px-0 text-[14px] font-semibold'>
+                            <button className='rounded-md 
+                                h-10 w-50 
+                                bg-amber-200 hover:bg-transparent
+                                hover:border-2 border-amber-500
+                                text-neutral-700 hover:text-amber-400
+                                cursor-pointer
+                            '>
                                 <p>Belanja Sekarang</p>
                             </button>
-                            <button className='btn-normal rounded-md'>
+                            <button className='rounded-md 
+                                h-10 w-50 
+                                bg-transparent hover:bg-amber-500
+                                border-2 border-amber-400 hover:border-white
+                                text-amber-400 hover:text-white
+                                cursor-pointer
+                            '>
                                 <p>Kenali Kami</p>
                             </button>
                         </div>
