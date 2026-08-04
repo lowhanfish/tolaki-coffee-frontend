@@ -92,3 +92,14 @@
 .list-button{
     padding: 5px 30px 5px 30px;
 }
+
+.btn-dropdown{
+    display: flex;
+    align-items: center;
+    border: 1px;
+    border-radius: 50px;
+    background-color: white;
+    width: 150px;
+    padding: 10px;
+    cursor: pointer;
+}
