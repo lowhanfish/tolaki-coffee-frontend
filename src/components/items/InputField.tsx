@@ -6,9 +6,10 @@ interface InputFieldProps {
     type: string,
     onChange: (value: string | number) => void
     value: string | number
+    placholder?: string
 }
 
-const InputField = ({ title, type, onChange, value }: InputFieldProps) => {
+const InputField = ({ title, type, onChange, value, placholder }: InputFieldProps) => {
 
 
 
@@ -16,6 +17,7 @@ const InputField = ({ title, type, onChange, value }: InputFieldProps) => {
         <div className='flex w-full flex-col' >
             <p className={`text-[11px] font-bold text-neutral-400 ${title ? 'block' : 'hidden'}`} >{title}</p>
             <input
+                placeholder={placholder}
                 className="input-field w-full"
                 type={type}
                 value={value}
