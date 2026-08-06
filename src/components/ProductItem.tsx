@@ -36,9 +36,9 @@ const ProductItem = ({ item }: ProductItemProps) => {
                     <p className='text-item-regular pt-2'><span className='text-item-header'>Rp. {item.price}</span>/{item.sat}</p>
                 </div>
                 {/* <div className='bg-red-400'> */}
-                <div className='absolute right-3 bottom-3 rounded-full border-2 border-yellow-600 w-10 h-10 flex justify-center items-center'>
+                <button className='absolute right-3 bottom-3 rounded-full border border-yellow-600 w-10 h-10 flex justify-center items-center cursor-pointer'>
                     <BsBagPlus className='text-yellow-600 font-bold' />
-                </div>
+                </button>
                 {/* </div> */}
             </div>
         </div>
