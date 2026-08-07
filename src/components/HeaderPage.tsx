@@ -1,14 +1,16 @@
 import Image from 'next/image'
 import React from 'react'
 
+interface HeaderPageProps {
+    children?: React.ReactNode
+}
 
-const HeaderPage = () => {
+
+const HeaderPage = ({ children }: HeaderPageProps) => {
     return (
         <div className='relative w-full h-64 md:h-109 flex items-center justify-center'>
-            <div className='z-2 flex flex-col items-center justify-center'>
-                <p className='text-[45px]'>Anoa Coffee</p>
-                <p className='-mt-2'>Pelajari tentang kami</p>
-            </div>
+            {children}
+
             <Image
                 alt='Header Page'
                 src={`/images/header_product1.webp`}

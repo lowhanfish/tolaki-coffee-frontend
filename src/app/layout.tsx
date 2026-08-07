@@ -4,6 +4,8 @@ import "../../public/styles/bg.css"
 import "../../public/styles/main.css"
 import "../../public/styles/button.scss"
 import "../../public/styles/sun-editor.scss"
+import "../../public/styles/color.scss"
+import "../../public/styles/fonts.scss"
 
 export const metadata: Metadata = {
   title: "Kopi-Tolaki",
