@@ -8,7 +8,7 @@ import CardImpact from './impact/CardImpact';
 const Impact = () => {
     return (
         <div className='text-neutral-800'>
-            <p>Headline & Impact</p>
+
             <div className='grid grid-cols-1 md:grid-cols-3'>
 
                 <div className='col-span-1'>

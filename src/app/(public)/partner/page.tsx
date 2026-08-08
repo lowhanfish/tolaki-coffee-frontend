@@ -1,6 +1,8 @@
 import React from 'react'
 import HeaderPage from '@/components/HeaderPage'
 import Impact from './components/Impact'
+import Stories from './components/Stories'
+
 
 
 const page = () => {
@@ -21,9 +23,19 @@ const page = () => {
                 </HeaderPage>
             </div>
 
-            <div className='min-h-75 px-5 lg:px-20 xl:px-45 py-5 xl:py-10'>
+            <div className='min-h-75 px-5 lg:px-20 xl:px-45 pt-5 xl:pt-10'>
+                <p className='title-header-3 text-neutral-700'>Headline & Impact</p>
                 <Impact />
             </div>
+            <div className='min-h-75 px-5 lg:px-20 xl:px-45 pt-5'>
+                <p className='title-text color-main'>STORIES FROM THE GARDEN</p>
+                <Stories />
+            </div>
+            <div className='min-h-75 px-5 lg:px-20 xl:px-45 pt-5'>
+                <p className='title-text color-main'>PARTNERSHIP STANDARTD</p>
+                {/* <Stories /> */}
+            </div>
+
         </div>
     )
 }
