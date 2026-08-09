@@ -6,7 +6,7 @@ import StoriesCard from './stories/StoriesCard'
 const Stories = () => {
     return (
         <div className='text-neutral-700'>
-            <div className='grid gap-3 grid-cols-4'>
+            <div className='grid gap-3 grid-cols-1 lg:grid-cols-4'>
                 <div className='col-span-1'>
                     <p className='title-header-3'>
                         Cerita dari Kebun

@@ -2,6 +2,8 @@ import React from 'react'
 import HeaderPage from '@/components/HeaderPage'
 import Impact from './components/Impact'
 import Stories from './components/Stories'
+import Standard from './components/Standard'
+
 
 
 
@@ -31,9 +33,9 @@ const page = () => {
                 <p className='title-text color-main'>STORIES FROM THE GARDEN</p>
                 <Stories />
             </div>
-            <div className='min-h-75 px-5 lg:px-20 xl:px-45 pt-5'>
+            <div className='min-h-75 px-5 lg:px-20 xl:px-45 pt-5 mt-5 pb-5 bg1'>
                 <p className='title-text color-main'>PARTNERSHIP STANDARTD</p>
-                {/* <Stories /> */}
+                <Standard />
             </div>
 
         </div>

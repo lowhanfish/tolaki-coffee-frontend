@@ -15,6 +15,14 @@
     background-color: #f1ece5;
 }
 
+.bg1 {
+    background-color: #eae4da;
+}
+
+.bg2 {
+    background-color: #e8e3d9;
+}
+
 .color-main {
     color: #c9a100;
 }
@@ -37,40 +45,6 @@
     font-weight: bold;
 }
 
-.title-text {
-    font-size: 12px;
-    font-weight: bold;
-}
-
-.title-header-1 {
-    font-size: 50px;
-}
-
-.title-header-2 {
-    font-size: 50px;
-}
-
-.title-header-3 {
-    font-size: 20px;
-    font-weight: bold;
-}
-
-.text-item-header {
-    color: #434343;
-    font-weight: 600;
-    font-size: 15px;
-}
-
-.text-item-body {
-    color: #434343;
-    font-weight: 600;
-    font-size: 15px;
-}
-
-.text-item-regular {
-    font-size: 15px;
-}
-
 .div-menu {
     display: flex;
     gap: 8px;
@@ -81,11 +55,6 @@
     padding: 5px 2px 5px 2px;
 }
 
-.text-admin-menu {
-    font-size: 13px;
-    /* font-weight: 550; */
-    color: #585656
-}
 
 .icon-admin-menu {
     font-size: 20px;
