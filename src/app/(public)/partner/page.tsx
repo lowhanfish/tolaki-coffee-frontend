@@ -3,6 +3,8 @@ import HeaderPage from '@/components/HeaderPage'
 import Impact from './components/Impact'
 import Stories from './components/Stories'
 import Standard from './components/Standard'
+import Joinus from './components/Joinus'
+
 
 
 
@@ -29,13 +31,16 @@ const page = () => {
                 <p className='title-header-3 text-neutral-700'>Headline & Impact</p>
                 <Impact />
             </div>
-            <div className='min-h-75 px-5 lg:px-20 xl:px-45 pt-5'>
+            <div className='min-h-75 px-5 lg:px-20 xl:px-45 py-5'>
                 <p className='title-text color-main'>STORIES FROM THE GARDEN</p>
                 <Stories />
             </div>
-            <div className='min-h-75 px-5 lg:px-20 xl:px-45 pt-5 mt-5 pb-5 bg1'>
+            <div className='min-h-75 px-5 lg:px-20 xl:px-45 py-10 mt-5 bg1'>
                 <p className='title-text color-main'>PARTNERSHIP STANDARTD</p>
                 <Standard />
+            </div>
+            <div className='w-full'>
+                <Joinus />
             </div>
 
         </div>
