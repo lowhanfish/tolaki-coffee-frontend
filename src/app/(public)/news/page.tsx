@@ -15,8 +15,8 @@ const page = () => {
             </div>
 
             <div className='min-h-75 px-5 md:px-10 xl:px-20 py-5 xl:py-10 text-neutral-800'>
-                <p>Semua Berita</p>
-                <div className='grid grid-cols-12 gap-3'>
+                <p className='text-[32px] font-bold'>Semua Berita</p>
+                <div className='grid grid-cols-1 lg:grid-cols-12 gap-3'>
                     <div className='col-span-9'>
                         <ListNews />
                     </div>
