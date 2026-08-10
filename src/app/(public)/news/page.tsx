@@ -1,14 +1,12 @@
-import React from 'react'
 import HeaderPage from '@/components/HeaderPage'
-import SideBarProduct from './components/SideBarProduct'
-import ContentProduct from './components/ContentProduct'
-
+import ListNews from './components/ListNews'
+import SideBarNews from './components/SideBarNews'
 
 const page = () => {
     return (
         <div className='bg relative '>
             <div className=''>
-                <HeaderPage image={`/images/header_product3a.webp`}>
+                <HeaderPage image={`/images/header_product2.webp`}>
                     <div className='z-2 flex flex-col items-center justify-center'>
                         <p className='text-[45px]'>Anoa Coffee</p>
                         <p className='-mt-2'>Product kami</p>
@@ -17,12 +15,13 @@ const page = () => {
             </div>
 
             <div className='min-h-75 px-5 md:px-10 xl:px-20 py-5 xl:py-10 text-neutral-800'>
+                <p>Semua Berita</p>
                 <div className='grid grid-cols-12 gap-3'>
-                    <div className='col-span-3'>
-                        <SideBarProduct />
+                    <div className='col-span-9'>
+                        <ListNews />
                     </div>
-                    <div className='col-span-9 '>
-                        <ContentProduct />
+                    <div className='col-span-3 '>
+                        <SideBarNews />
                     </div>
                 </div>
             </div>
