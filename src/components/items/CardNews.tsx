@@ -34,7 +34,7 @@ const CardNews = ({ id, title, description, file }: CardNewsProps) => {
             </div>
             <div className='p-3'>
                 <p className='font-bold pt-1 cursor-pointer'>{title}</p>
-                <p className='text-[12px] pt-2'>{description}</p>
+                <p className='text-[12px] pt-2 line-clamp-2'>{description}</p>
 
                 <button className="
                         w-full py-1 mt-5  

@@ -1,42 +1,72 @@
+"use client"
 import CardNews from "@/components/items/CardNews"
+import Pagination from "@/components/items/Pagination";
 import { BsArrowRight } from "react-icons/bs";
+
 
 const List = [
     {
         id: "1",
         title: "Mendukung Petani Lokal, Menjaga Kualitas Kopi Tolaki",
         description: "Kami terus berkomitmen mendampingi petani kopi di Sulawesi Tenggara untuk menghasilkan kopi berkualitas tinggi dan berkelanjutan.",
-        file: "/images/about.jpg"
+        file: "/images/about.jpg",
+        date: "2 Agustus 2026"
     },
     {
         id: "2",
-        title: "Mendukung Petani Lokal, Menjaga Kualitas Kopi Tolaki",
-        description: "Kami terus berkomitmen mendampingi petani kopi di Sulawesi Tenggara untuk menghasilkan kopi berkualitas tinggi dan berkelanjutan.",
-        file: "/images/about.jpg"
+        title: "Panen Kopi Berkualitas, Langkah Awal Rasa yang Istimewa",
+        description: "Proses panen yang tepat waktu dan selektif menjadi kunci utama dalam menjaga cita rasa kopi terbaik.",
+        file: "/images/about.jpg",
+        date: "2 Agustus 2026"
     },
     {
         id: "3",
-        title: "Mendukung Petani Lokal, Menjaga Kualitas Kopi Tolaki",
-        description: "Kami terus berkomitmen mendampingi petani kopi di Sulawesi Tenggara untuk menghasilkan kopi berkualitas tinggi dan berkelanjutan.",
-        file: "/images/about.jpg"
+        title: "Kopi Tolaki Premium dengan Kemasan Baru",
+        description: "Tampilan baru, rasa tetap istimewa. Nikmati pengalaman ngopi yang lebih berkesan.",
+        file: "/images/about.jpg",
+        date: "2 Agustus 2026"
     },
     {
         id: "4",
-        title: "Mendukung Petani Lokal, Menjaga Kualitas Kopi Tolaki",
-        description: "Kami terus berkomitmen mendampingi petani kopi di Sulawesi Tenggara untuk menghasilkan kopi berkualitas tinggi dan berkelanjutan.",
-        file: "/images/about.jpg"
+        title: "Pelatihan Petani: Tingkatkan Kualitas, Tingkatkan Kesejahteraan",
+        description: "Kegiatan pelatihan rutin untuk petani mitra kami dalam budidaya kopi berkelanjutan.",
+        file: "/images/about.jpg",
+        date: "2 Agustus 2026"
     },
     {
         id: "5",
-        title: "Mendukung Petani Lokal, Menjaga Kualitas Kopi Tolaki",
-        description: "Kami terus berkomitmen mendampingi petani kopi di Sulawesi Tenggara untuk menghasilkan kopi berkualitas tinggi dan berkelanjutan.",
-        file: "/images/about.jpg"
+        title: "Komitmen Kami pada Proses yang Berkelanjutan",
+        description: "Dari hulu ke hilir, setiep proses kami rancang untuk menjaga kualitas dan kelestarian lingkungan.",
+        file: "/images/about.jpg",
+        date: "2 Agustus 2026"
     },
     {
         id: "6",
-        title: "Mendukung Petani Lokal, Menjaga Kualitas Kopi Tolaki",
-        description: "Kami terus berkomitmen mendampingi petani kopi di Sulawesi Tenggara untuk menghasilkan kopi berkualitas tinggi dan berkelanjutan.",
-        file: "/images/about.jpg"
+        title: "Mengenal Single Origin: Apa dan Mengapa Istimewa?",
+        description: "Pelajari lebih dalam tentang kopi single origin dan keunikan rasa dari setiap daerah.",
+        file: "/images/about.jpg",
+        date: "2 Agustus 2026"
+    },
+    {
+        id: "7",
+        title: "Kopi Tolaki Hadir di Festival Kopi Nusantara 2025?",
+        description: "Terima kasih kepada semua yang telah berkunjung dan mendukung kami di acara ini!",
+        file: "/images/about.jpg",
+        date: "2 Agustus 2026"
+    },
+    {
+        id: "8",
+        title: "Cerita Pak La Ode: Dari Petani hingga Mitra Kopi Tolaki",
+        description: "Perjalanan inspiratif salah satu petani mitra kami yang penuh dedikasi dan semangat.",
+        file: "/images/about.jpg",
+        date: "2 Agustus 2026"
+    },
+    {
+        id: "9",
+        title: "Tips Menyimpan Kopi agar Tetap Segar dan Nikmat",
+        description: "Cara sederhana untuk menjaga kesegaran kopi bubuk maupun biji kopi di rumah.",
+        file: "/images/about.jpg",
+        date: "2 Agustus 2026"
     },
 
 ]
@@ -78,6 +108,12 @@ const ListNews = () => {
                     ))
                 }
 
+            </div>
+
+            <div className='flex justify-center items-center pt-10'>
+                <div className=''>
+                    <Pagination total={999} limit={5} />
+                </div>
             </div>
         </div>
     )
