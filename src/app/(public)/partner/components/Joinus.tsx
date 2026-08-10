@@ -41,7 +41,7 @@ const Joinus = () => {
                                         placholder='Nama Lengkap'
                                     />
                                 </div>
-                                <div className='mt-0 md:mt-2'>
+                                <div className='mt-2 md:mt-2'>
                                     <InputField
                                         type='text'
                                         value={nama}
@@ -59,7 +59,7 @@ const Joinus = () => {
                                         placholder='Kelompok Tani / Lembaga'
                                     />
                                 </div>
-                                <div className='mt-0 md:mt-2'>
+                                <div className='mt-2 md:mt-2'>
                                     <InputField
                                         type='text'
                                         value={nama}

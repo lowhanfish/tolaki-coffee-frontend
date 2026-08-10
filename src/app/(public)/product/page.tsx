@@ -8,7 +8,7 @@ const page = () => {
     return (
         <div className='bg relative '>
             <div className=''>
-                <HeaderPage>
+                <HeaderPage image={`/images/header_product3a.webp`}>
                     <div className='z-2 flex flex-col items-center justify-center'>
                         <p className='text-[45px]'>Anoa Coffee</p>
                         <p className='-mt-2'>Product kami</p>
