@@ -1,4 +1,8 @@
 import HeaderPage from '@/components/HeaderPage'
+import InformationContact from './components/InformationContact'
+import SendMessage from './components/SendMessage'
+import ConnectContact from './components/ConnectContact'
+
 
 
 const page = () => {
@@ -14,7 +18,19 @@ const page = () => {
             </div>
 
             <div className='min-h-75 px-5 md:px-10 xl:px-20 py-5 xl:py-10 text-neutral-800'>
-
+                <div className='grid grid-cols-3'>
+                    <div className='col-span-1'>
+                        <p className='title-header-3'>Informasi Kontak</p>
+                        <InformationContact />
+                    </div>
+                    <div className='col-span-2'>
+                        <p className='title-header-3'>Kirim Pesan</p>
+                        <SendMessage />
+                    </div>
+                </div>
+                <div>
+                    <ConnectContact />
+                </div>
             </div>
         </div>
     )
