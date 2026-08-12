@@ -17,8 +17,8 @@ const page = () => {
                 </HeaderPage>
             </div>
 
-            <div className='min-h-75 px-5 md:px-10 xl:px-20 py-5 xl:py-10 text-neutral-800'>
-                <div className='grid grid-cols-3'>
+            <div className='min-h-75 px-5 md:px-20 xl:px-50 py-5 xl:py-10 text-neutral-800'>
+                <div className='grid grid-cols-3 gap-3 md:gap-5 xl:gap-10'>
                     <div className='col-span-1'>
                         <p className='title-header-3'>Informasi Kontak</p>
                         <InformationContact />
