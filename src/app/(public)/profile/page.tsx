@@ -6,7 +6,7 @@ const page = () => {
     return (
         <div className='bg relative'>
             <div className=''>
-                <HeaderPage>
+                <HeaderPage image='/images/header_product5.webp'>
                     <div className='z-2 flex flex-col items-center justify-center'>
                         <p className='text-[45px]'>Anoa Coffee</p>
                         <p className='-mt-2'>Pelajari tentang kami</p>

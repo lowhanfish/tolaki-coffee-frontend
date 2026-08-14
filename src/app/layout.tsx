@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+
 import "./globals.css";
 import "../../public/styles/bg.css"
 import "../../public/styles/main.css"
@@ -6,6 +7,8 @@ import "../../public/styles/button.scss"
 import "../../public/styles/sun-editor.scss"
 import "../../public/styles/color.scss"
 import "../../public/styles/fonts.scss"
+
+import CartButton from "@/components/CartButton";
 
 export const metadata: Metadata = {
   title: "Kopi-Tolaki",
@@ -27,6 +30,10 @@ export default function RootLayout({
       </head>
       <body className="min-h-full h-full flex flex-col bg">
         {children}
+
+        <div className="fixed bottom-3 right-3 z-10">
+          <CartButton />
+        </div>
       </body>
     </html>
   );
