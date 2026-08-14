@@ -2,6 +2,8 @@ import React from 'react'
 import { PiMapPinLineDuotone, PiPhoneDuotone, PiEnvelopeDuotone, PiTimerDuotone } from "react-icons/pi";
 import ItemInfoContact from './informationContact/ItemInfoContact';
 import GoogleMap from "@/components/GoogleMap";
+import Button from '@/components/items/Button';
+
 
 const InformationContact = () => {
     return (
@@ -41,6 +43,19 @@ const InformationContact = () => {
 
             <div>
                 <GoogleMap />
+            </div>
+
+            <div>
+                <button className='border border-neutral-400 rounded-2xl 
+                w-full 
+                cursor-pointer
+                py-1
+                '>
+                    <div>
+                        <p className='font-bold text-[12px]'>Dapatkan Arah</p>
+                    </div>
+                </button>
+
             </div>
         </div>
     )

@@ -1,8 +1,9 @@
 "use client"
 
+import { useState } from 'react'
+import Button from '@/components/items/Button';
 import InputField from '@/components/items/InputField'
 import InputtextArea from '@/components/items/InputtextArea'
-import { useState } from 'react'
 
 
 
@@ -55,6 +56,15 @@ const SendMessage = () => {
                     value={input}
                     onChange={(e) => setInput(e as string)}
                 />
+            </div>
+
+            <div className='mt-5'>
+                {/* <button className='hei'>
+                    Dapatkan Arah
+                </button> */}
+                <Button>
+                    <p>sdfsdfsdf</p>
+                </Button>
             </div>
         </div>
     )

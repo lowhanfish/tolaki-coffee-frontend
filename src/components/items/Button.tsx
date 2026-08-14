@@ -1,7 +1,7 @@
 import { ReactNode } from 'react'
 
 interface ButtonProps {
-    color: string,
+    color?: string,
     size?: string,
     children: ReactNode,
     type?: string,
@@ -20,7 +20,7 @@ const modelMap: Record<string, string> = {
     box: "rounded-sm ",
 }
 
-const Button = ({ color, size = 'h-9', children, type = "box", onClick }: ButtonProps) => {
+const Button = ({ color = "primary", size = 'h-9', children, type = "box", onClick }: ButtonProps) => {
     return (
         <button
             type="button"
