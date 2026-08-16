@@ -3,7 +3,6 @@
 import { useState } from 'react'
 import Image from 'next/image'
 import { BsBagPlus } from "react-icons/bs";
-import Modal from './items/Modal';
 
 
 
@@ -46,17 +45,6 @@ const ProductItem = ({ item }: ProductItemProps) => {
                     <BsBagPlus className='text-yellow-600 font-bold' />
                 </button>
                 {/* </div> */}
-            </div>
-
-
-            <div>
-                <Modal
-                    size='xl'
-                    openModal={openModal}
-                    setOpenModal={(e) => setOpenModal(e)}
-                >
-                    <p>sdfs</p>
-                </Modal>
             </div>
 
         </div>
