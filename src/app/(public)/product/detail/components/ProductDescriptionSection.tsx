@@ -1,6 +1,6 @@
 import React from 'react'
 import Button from '@/components/items/Button';
-import { BsFillCartCheckFill, BsCartPlusFill, BsFillStarFill, BsChevronLeft, BsChevronRight } from "react-icons/bs";
+import { BsFillCartCheckFill, BsCartPlusFill, BsFillStarFill } from "react-icons/bs";
 
 const ProductDescriptionSection = () => {
     return (

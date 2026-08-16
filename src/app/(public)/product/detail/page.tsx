@@ -23,7 +23,7 @@ const page = () => {
             <div className='min-h-75 px-5 md:px-10 xl:px-20 py-5 xl:py-10 text-neutral-800'>
                 <div className='w-full h-full pb-5'>
                     <div className='grid grid-cols-1 lg:grid-cols-12 gap-3'>
-                        <div className='col-span-1 lg:col-span-5 relative '>
+                        <div className='col-span-1 lg:col-span-5 '>
                             <ProductImageSection />
                         </div>
 
