@@ -12,7 +12,7 @@ const page = () => {
 
         <div className='bg relative '>
             <div className=''>
-                <HeaderPage image={`/images/header_product3a.webp`}>
+                <HeaderPage height='h-20' image={`/images/header_product6.webp`}>
                     <div className='z-2 flex flex-col items-center justify-center'>
                         <p className='text-[45px]'>Anoa Coffee</p>
                         <p className='-mt-2'>Product kami</p>
