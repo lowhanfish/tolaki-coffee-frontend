@@ -23,7 +23,6 @@ const ProductImageSection = () => {
 
                 </div>
 
-
                 <div className='absolute inset-0 flex'>
                     <button className='w-20 flex items-center justify-center cursor-pointer'>
                         <BsChevronLeft className='text-white text-[20px]' />

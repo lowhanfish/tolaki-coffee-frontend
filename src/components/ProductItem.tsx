@@ -3,6 +3,8 @@
 import { useState } from 'react'
 import Image from 'next/image'
 import { BsBagPlus } from "react-icons/bs";
+import Link from 'next/link';
+
 
 
 
@@ -41,9 +43,11 @@ const ProductItem = ({ item }: ProductItemProps) => {
                     <p className='text-item-regular pt-2'><span className='text-item-header'>Rp. {item.price}</span>/{item.sat}</p>
                 </div>
                 {/* <div className='bg-red-400'> */}
-                <button onClick={() => setOpenModal(true)} className='absolute right-3 bottom-3 rounded-full border border-yellow-600 w-10 h-10 flex justify-center items-center cursor-pointer'>
-                    <BsBagPlus className='text-yellow-600 font-bold' />
-                </button>
+                <Link href="/product/detail">
+                    <button onClick={() => setOpenModal(true)} className='absolute right-3 bottom-3 rounded-full border border-yellow-600 w-10 h-10 flex justify-center items-center cursor-pointer'>
+                        <BsBagPlus className='text-yellow-600 font-bold' />
+                    </button>
+                </Link>
                 {/* </div> */}
             </div>
 
