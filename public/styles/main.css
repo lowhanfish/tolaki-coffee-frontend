@@ -83,3 +83,15 @@
 .btn-form:hover {
     background-color: #d7a144;
 }
+
+.cheklist-product {
+    display: flex;
+    flex-direction: row;
+    gap: 3px;
+    border-style: dotted;
+    border-width: 0.5px;
+    border-color: #434343;
+    padding: 5px 10px 5px 10px;
+    border-radius: 3px;
+    cursor: pointer;
+}

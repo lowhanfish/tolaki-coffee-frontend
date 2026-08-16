@@ -1,4 +1,6 @@
 import { ReactNode, Dispatch, SetStateAction } from 'react'
+import ProductDetail from '../ProductDetail'
+
 
 interface ModalProps {
     size: string,
@@ -32,7 +34,7 @@ const Modal = ({ size, children, openModal, setOpenModal, color, title }: ModalP
             {
                 openModal && (
 
-                    <div className='absolute z-2 bg-black/50 inset-0 flex flex-col justify-center items-center'>
+                    <div className='fixed z-2 bg-black/50 inset-0 flex flex-col justify-center items-center'>
                         <div className={`bg shadow-md shadow-black/30 min-h-30 flex flex-col rounded-sm ${sizeMap[size]} relative overflow-scroll scrollbar-thumb-yellow-600`}>
 
                             <div className={`flex ${color ? colorMap[color] : ''} p-2 rounded-t-sm`}>
@@ -45,7 +47,7 @@ const Modal = ({ size, children, openModal, setOpenModal, color, title }: ModalP
                                 </button>
                             </div>
                             <div className='px-3'>
-                                {children}
+                                <ProductDetail />
                             </div>
                         </div>
                     </div>
