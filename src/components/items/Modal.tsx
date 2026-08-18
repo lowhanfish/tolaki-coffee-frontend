@@ -1,5 +1,5 @@
 import { ReactNode, Dispatch, SetStateAction } from 'react'
-import ProductDetail from '../ProductDetail'
+// import ProductDetail from '../ProductDetail'
 
 
 interface ModalProps {
@@ -47,7 +47,7 @@ const Modal = ({ size, children, openModal, setOpenModal, color, title }: ModalP
                                 </button>
                             </div>
                             <div className='px-3'>
-                                <ProductDetail />
+                                {children}
                             </div>
                         </div>
                     </div>
