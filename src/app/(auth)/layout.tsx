@@ -8,7 +8,7 @@ interface LayOutProps {
 const layout = ({ children }: LayOutProps) => {
     return (
         <Providers>
-            <div>
+            <div className='h-full '>
                 {children}
             </div>
         </Providers>
