@@ -1,8 +1,11 @@
+'use client';
+
 import { ReactNode } from 'react'
 import AdminSidebar from '@/components/AdminSidebar'
 import { IoIosMenu } from "react-icons/io";
 import Image from 'next/image';
 import Link from 'next/link';
+
 
 
 
@@ -14,6 +17,8 @@ interface ChildrensProps {
 
 const layout = ({ children }: ChildrensProps) => {
     return (
+
+
         <div className='w-full h-full flex flex-col text-neutral-800'>
 
 
