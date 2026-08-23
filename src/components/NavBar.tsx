@@ -69,10 +69,12 @@ const DesktopNavbar = () => {
                 </div>
                 <div className='col-span-3'>
                     <div className='flex gap-2'>
-                        <button className='w-20 h-6 border border-white bg-linear-to-l from-amber-300 to-amber-500 rounded-2xl font-bold text-[10px] cursor-pointer flex justify-center items-center gap-2'>
-                            <BsLockFill />
-                            <p className='text-shadow-2xs'>Login</p>
-                        </button>
+                        <Link href="/login">
+                            <button className='w-20 h-6 border border-white bg-linear-to-l from-amber-300 to-amber-500 rounded-2xl font-bold text-[10px] cursor-pointer flex justify-center items-center gap-2'>
+                                <BsLockFill />
+                                <p className='text-shadow-2xs'>Login</p>
+                            </button>
+                        </Link>
                         {/* <button className='w-20 h-6 border border-white bg-linear-to-l from-red-300 to-red-500 rounded-2xl font-bold text-[10px] cursor-pointer flex justify-center items-center gap-2'>
                             <BsPersonFillAdd />
                             <p className='text-shadow-2xs'>Register</p>

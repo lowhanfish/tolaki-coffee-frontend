@@ -8,6 +8,10 @@ import { GoogleLogin } from '@react-oauth/google';
 import Image from 'next/image';
 import Button from '@/components/items/Button';
 import { PiLockKeyDuotone } from "react-icons/pi";
+import Link from 'next/link';
+import { useRouter } from 'next/navigation';
+
+
 
 
 
@@ -16,6 +20,7 @@ export default function LoginPage() {
 
     const [username, SetUsername] = useState<string>("")
     const [password, SetPassword] = useState<string>("")
+    const router = useRouter()
 
 
 
@@ -62,7 +67,7 @@ export default function LoginPage() {
                     </div>
 
                     <div className='p-10 md:p-0 z-10 w-full flex justify-center'>
-                        <div className='w-full md:w-100 px-10 md:px-15 py-5 md:py-10 rounded-sm shadow-md bg-white/20 md:bg-white/60 backdrop-blur-md'>
+                        <div className='w-full md:w-100 px-10 md:px-15 py-15 md:py-12 rounded-sm shadow-md bg-white/20 md:bg-white/60 backdrop-blur-md'>
 
                             <div className='flex flex-col justify-center items-center text-center md:text-neutral-700 w-full '>
 
@@ -102,13 +107,25 @@ export default function LoginPage() {
                                 </div>
 
                                 <div>
-                                    <Button>
+                                    <Button size='h-10'>
                                         <p className='text-[13px] font-semibold text-white text-shadow-2xs'>Login</p>
                                     </Button>
                                 </div>
 
-                                <div className='pt-3'>
+                                <div className='flex gap-2 items-center'>
+                                    <div className='w-full bg-white md:bg-black/20 h-[0.5px]'></div>
+                                    <p className='text-[10px] text-white md:text-neutral-500'>atau</p>
+                                    <div className='w-full bg-white md:bg-black/20 h-[0.5px]'></div>
+                                </div>
+
+                                <div>
                                     <GoogleLogin onSuccess={handleSuccess} onError={() => console.log('Login Gagal')} />
+                                </div>
+
+                                <div className='pt-2'>
+                                    <Button size='h-12' onClick={() => router.back()} color='danger'>
+                                        <p className='text-[13px] font-semibold text-white text-shadow-2xs'>Cancel</p>
+                                    </Button>
                                 </div>
 
                             </div>
