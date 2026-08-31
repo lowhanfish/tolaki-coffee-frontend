@@ -17,30 +17,29 @@ export default function LoginPage() {
     const router = useRouter();
 
     // Handler untuk Google OAuth Login
-    const handleSuccess = async (credentialResponse: any) => {
+    const handleSuccess = async (credentialResponse: { credential?: string }) => {
         setIsLoading(true);
         try {
-            // Sesuaikan PORT backend NestJS Anda (misal: http://localhost:3000/auth/google)
+            if (!credentialResponse.credential) {
+                alert('Credential Google tidak ditemukan. Silakan coba lagi.');
+                return;
+            }
+
             const res = await fetch('http://localhost:3001/auth/google', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify(credentialResponse),
+                credentials: 'include',
+                body: JSON.stringify({
+                    credential: credentialResponse.credential,
+                }),
             });
 
             const data = await res.json();
 
             if (res.ok) {
-                // Simpan JWT access & refresh token dari NestJS ke localStorage
-                localStorage.setItem('access_token', data.access_token);
-                if (data.refresh_token) {
-                    localStorage.setItem('refresh_token', data.refresh_token);
-                }
-
-                console.log('Login Google NestJS Sukses:', data);
-
-                // Redirect ke halaman dashboard
+                console.log('Login Google NestJS Sukses:', data.user);
                 router.push('/home');
             } else {
                 console.error('Login NestJS Gagal:', data.message);
@@ -60,7 +59,7 @@ export default function LoginPage() {
         setIsLoading(true);
 
         try {
-            const res = await fetch('http://localhost:3000/auth/login', {
+            const res = await fetch('http://localhost:3001/auth/login', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -162,7 +161,7 @@ export default function LoginPage() {
                                 </div>
 
                                 <div>
-                                    <Button size="h-10" disabled={isLoading}>
+                                    <Button size="h-10">
                                         <p className="text-[13px] font-semibold text-white text-shadow-2xs">
                                             {isLoading ? 'Memuat...' : 'Login'}
                                         </p>
@@ -175,12 +174,11 @@ export default function LoginPage() {
                                     <div className="w-full bg-white md:bg-black/20 h-[0.5px]"></div>
                                 </div>
 
-                                <div className="flex justify-center">
-                                    <GoogleLogin
-                                        onSuccess={handleSuccess}
-                                        onError={() => console.log('Login Gagal')}
-                                    />
-                                </div>
+
+                                <GoogleLogin
+                                    onSuccess={handleSuccess}
+                                    onError={() => console.log('Login Gagal')}
+                                />
 
                                 <div className="pt-2">
                                     <Button
