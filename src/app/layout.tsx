@@ -1,5 +1,10 @@
 import type { Metadata } from "next";
 
+import TanstackQuery from "@/providers/TanstackQuery";
+
+
+
+
 import "./globals.css";
 import "../../public/styles/bg.css"
 import "../../public/styles/main.css"
@@ -15,6 +20,8 @@ export const metadata: Metadata = {
   description: "Distributor Resmi Kopi Khas Tolaki",
 };
 
+
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -29,11 +36,12 @@ export default function RootLayout({
         />
       </head>
       <body className="min-h-full h-full flex flex-col bg">
-        {children}
-
-        <div className="fixed bottom-3 right-3 z-10">
-          <CartButton />
-        </div>
+        <TanstackQuery>
+          {children}
+          <div className="fixed bottom-3 right-3 z-10">
+            <CartButton />
+          </div>
+        </TanstackQuery>
       </body>
     </html>
   );

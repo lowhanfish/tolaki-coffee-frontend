@@ -58,8 +58,8 @@ const ContentProduct = () => {
 
     return (
         <div>
-            <div className='grid grid-cols-12 items-center'>
-                <div className='col-span-5'>
+            <div className='grid grid-cols-12 gap-2 items-center'>
+                <div className='col-span-12 md:col-span-5'>
                     <InputField
                         type="text"
                         value={form.unit_price}
@@ -67,7 +67,7 @@ const ContentProduct = () => {
                         placholder="Cari Product"
                     />
                 </div>
-                <div className='flex justify-end gap-2 col-span-7'>
+                <div className='col-span-12 md:col-span-7 flex justify-center md:justify-end gap-2'>
                     <button className='btn-dropdown'>
                         <p className='flex-1'>Terpoluer</p>
                         <BsChevronRight className='w-5' />
@@ -83,7 +83,7 @@ const ContentProduct = () => {
             <div className='grid grid-cols-12 gap-3 mt-3'>
                 {
                     List.map((item, i) => (
-                        <div className='col-span-3' key={i}>
+                        <div className='col-span-12 md:col-span-6 lg:col-span-3' key={i}>
                             <ProductItem item={item} />
                         </div>
                     ))

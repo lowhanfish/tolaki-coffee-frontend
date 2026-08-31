@@ -1,6 +1,8 @@
 import Image from 'next/image'
+import Link from 'next/link';
 import React from 'react'
 import { BsArrowRight } from "react-icons/bs";
+
 
 const HomeAbout = () => {
     return (
@@ -19,11 +21,13 @@ const HomeAbout = () => {
                     </p>
                 </div>
 
-                <button className='mt-6 cursor-pointer list-button flex gap-2 justify-center items-center'>
-                    <p>Selengkapnya tentang kami</p>
-                    <BsArrowRight />
+                <Link href="/profile">
+                    <button className='mt-6 cursor-pointer list-button flex gap-2 justify-center items-center'>
+                        <p>Selengkapnya tentang kami</p>
+                        <BsArrowRight />
 
-                </button>
+                    </button>
+                </Link>
             </div>
 
             <div className='col-span-9 xl:col-span-4 w-full rounded-2xl p-2 h-full bg-linear-to-l from-amber-900 via-amber-500 to-transparent'>

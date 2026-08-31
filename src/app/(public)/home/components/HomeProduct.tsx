@@ -1,6 +1,8 @@
 import React from 'react'
 import { BsArrowRight } from "react-icons/bs";
 import ProductItem from '@/components/ProductItem';
+import Link from 'next/link';
+
 
 
 const List = [
@@ -20,10 +22,12 @@ const HomeProduct = () => {
                     <p className='title-header-3'>Produk Pilihan Kami</p>
                 </div>
                 <div className='flex-1 flex w-full justify-end'>
-                    <button className='list-button cursor-pointer flex gap-2 justify-center items-center'>
-                        <p>Lihat Semua Product</p>
-                        <BsArrowRight />
-                    </button>
+                    <Link href="/product">
+                        <button className='list-button cursor-pointer flex gap-2 justify-center items-center'>
+                            <p>Lihat Semua Product</p>
+                            <BsArrowRight />
+                        </button>
+                    </Link>
                 </div>
             </div>
 
