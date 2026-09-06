@@ -3,6 +3,9 @@ import { useState } from 'react'
 import Image from 'next/image'
 import { BsLockFill, BsPersonFillAdd, BsList, BsArrowLeftSquareFill } from "react-icons/bs";
 import Link from 'next/link';
+import ImageProfileNavbar from './ImageProfileNavbar';
+import { fetchApi } from '@/lib/apiFetch';
+
 
 
 const Menu = [
@@ -16,6 +19,10 @@ const Menu = [
 
 
 const NavBar = () => {
+
+
+
+
     return (
         <>
             <div className='hidden lg:block'>
@@ -25,12 +32,16 @@ const NavBar = () => {
                 <MobileNavbar />
             </div>
         </>
-
     )
 }
 
 
 const DesktopNavbar = () => {
+
+    const [isLogin, setIsLogin] = useState<boolean>(true)
+
+
+
     return (
         <div className='absolute top-0 z-2 w-full'>
             <div className='grid grid-cols-12 w-full h-20 items-center justify-center py-2 px-1 md:px-10'>
@@ -67,19 +78,9 @@ const DesktopNavbar = () => {
                         }
                     </ul>
                 </div>
-                <div className='col-span-3'>
-                    <div className='flex gap-2'>
-                        <Link href="/login">
-                            <button className='w-20 h-6 border border-white bg-linear-to-l from-amber-300 to-amber-500 rounded-2xl font-bold text-[10px] cursor-pointer flex justify-center items-center gap-2'>
-                                <BsLockFill />
-                                <p className='text-shadow-2xs'>Login</p>
-                            </button>
-                        </Link>
-                        {/* <button className='w-20 h-6 border border-white bg-linear-to-l from-red-300 to-red-500 rounded-2xl font-bold text-[10px] cursor-pointer flex justify-center items-center gap-2'>
-                            <BsPersonFillAdd />
-                            <p className='text-shadow-2xs'>Register</p>
-                        </button> */}
-                    </div>
+
+                <div className='col-span-3 h-full'>
+                    <ImageProfileNavbar />
                 </div>
             </div>
         </div>
@@ -124,7 +125,6 @@ const MobileNavbar = () => {
                                             <p className='text-neutral-800 text-[16px] font-bold'>{item.title}</p>
                                         </Link>
                                     </li>
-
                                 ))
                             }
                         </ul>

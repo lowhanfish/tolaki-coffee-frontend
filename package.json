@@ -18,7 +18,8 @@
     "react-dom": "19.2.4",
     "react-icons": "^5.6.0",
     "sass": "^1.101.0",
-    "suneditor-react": "^3.6.1"
+    "suneditor-react": "^3.6.1",
+    "zustand": "^5.0.15"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",

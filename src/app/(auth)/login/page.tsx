@@ -9,12 +9,21 @@ import Button from '@/components/items/Button';
 import { PiLockKeyDuotone } from 'react-icons/pi';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
+import { useDataStore } from '@/stores/dataStore';
+
+
 
 export default function LoginPage() {
+
+    const url = useDataStore(state => state.url)
+
+
     const [username, SetUsername] = useState<string>('');
     const [password, SetPassword] = useState<string>('');
     const [isLoading, setIsLoading] = useState<boolean>(false);
     const router = useRouter();
+
+
 
     // Handler untuk Google OAuth Login
     const handleSuccess = async (credentialResponse: { credential?: string }) => {
@@ -25,7 +34,7 @@ export default function LoginPage() {
                 return;
             }
 
-            const res = await fetch('http://localhost:3001/auth/google', {
+            const res = await fetch(`${url}/auth/google`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -59,11 +68,12 @@ export default function LoginPage() {
         setIsLoading(true);
 
         try {
-            const res = await fetch('http://localhost:3001/auth/login', {
+            const res = await fetch(`${url}/auth/login`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
+                credentials: 'include',
                 body: JSON.stringify({ email: username, password }),
             });
 
