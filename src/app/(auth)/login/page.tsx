@@ -49,6 +49,9 @@ export default function LoginPage() {
 
             if (res.ok) {
                 console.log('Login Google NestJS Sukses:', data.user);
+                const response = {
+
+                }
                 router.push('/home');
             } else {
                 console.error('Login NestJS Gagal:', data.message);

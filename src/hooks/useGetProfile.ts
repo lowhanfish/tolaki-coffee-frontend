@@ -1,7 +1,18 @@
-import React from 'react'
+"use client";
 
-const useGetProfile = () => {
-  return ''
-}
+import { useQuery } from "@tanstack/react-query";
+import { fetchApi } from "@/lib/apiFetch";
+import { Profile, useDataStore } from "@/stores/dataStore";
 
-export default useGetProfile
+const getProfile = async (): Promise<Profile> => {
+  const { url } = useDataStore.getState();
+  return fetchApi<Profile>(`${url}/profile/me`);
+};
+
+export const useGetProfile = () => {
+  return useQuery({
+    queryKey: ["profile", "me"],
+    queryFn: getProfile,
+    retry: false,
+  });
+};
