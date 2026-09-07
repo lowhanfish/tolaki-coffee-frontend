@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 
 import TanstackQuery from "@/providers/TanstackQuery";
+import CartButton from "@/components/CartButton";
+import AuthProvider from "@/providers/AuthProvider";
 
 
 
@@ -13,7 +15,6 @@ import "../../public/styles/sun-editor.scss"
 import "../../public/styles/color.scss"
 import "../../public/styles/fonts.scss"
 
-import CartButton from "@/components/CartButton";
 
 export const metadata: Metadata = {
   title: "Kopi-Tolaki",
@@ -37,10 +38,12 @@ export default function RootLayout({
       </head>
       <body className="min-h-full h-full flex flex-col bg">
         <TanstackQuery>
-          {children}
-          <div className="fixed bottom-3 right-3 z-10">
-            <CartButton />
-          </div>
+          <AuthProvider>
+            {children}
+            <div className="fixed bottom-3 right-3 z-10">
+              <CartButton />
+            </div>
+          </AuthProvider>
         </TanstackQuery>
       </body>
     </html>

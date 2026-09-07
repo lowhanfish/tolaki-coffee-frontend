@@ -5,6 +5,7 @@ export interface Profile {
   name: string;
   email: string;
   avatarUrl: string;
+  avatarSource: string;
 }
 
 interface DataState {
@@ -13,7 +14,7 @@ interface DataState {
   profile: Profile | null;
 
   setIsLogin: (status: boolean) => void;
-  setProfile: (profile: Profile) => void;
+  setProfile: (profile: Profile | null) => void;
   clearAuth: () => void;
 }
 
