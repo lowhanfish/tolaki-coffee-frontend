@@ -5,8 +5,6 @@ import { useDataStore, Profile } from '@/stores/dataStore'
 import { fetchApi } from '@/lib/apiFetch'
 import { useQuery, QueryClient, useQueryClient } from '@tanstack/react-query'
 
-
-
 const AuthProvider = ({ children }: { children: ReactNode }) => {
     const url = useDataStore(state => state.url)
     const setIsLogin = useDataStore((state) => state.setIsLogin);

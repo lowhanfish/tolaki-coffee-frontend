@@ -2,54 +2,86 @@
 import Image from 'next/image'
 import Link from 'next/link'
 import { useEffect, useState } from 'react'
-import { BsLockFill, BsPersonFillAdd, BsList, BsArrowLeftSquareFill } from "react-icons/bs";
-import { useQueryClient, useMutation, useQuery } from '@tanstack/react-query';
+import { BsLockFill, BsFillPersonFill, BsFillGearFill } from "react-icons/bs";
+import { useDataStore } from '@/stores/dataStore';
 
-const readData = async (url: string): Promise<any> => {
-    const res = await fetch(url, {
-        method: 'GET',
-        credentials: 'include'
-    })
 
-    if (!res.ok) throw new Error(`Error : ${res.status}`)
-    return res.json()
-}
 
 const ImageProfileNavbar = () => {
+    const url = useDataStore((state) => state.url);
+    const isLogin = useDataStore((state) => state.isLogin);
+    const profile = useDataStore((state) => state.profile);
+
+    const [isShowDropDown, setIsShowDropDown] = useState<boolean>(false)
+
+    const logOut = () => {
+
+    }
+
+    useEffect(() => {
+
+    }, [isLogin, profile])
 
 
-
-    var { data: List, isLoading, isError, error } = useQuery({
-        queryFn: () => readData('http://localhost:3001/profile/me'),
-        queryKey: ['MyProfile']
-    })
-
-
-
-
-
-
-    const [isLogin, setIsLogin] = useState<boolean>(false)
     return (
         <div className='h-full'>
 
             {/* <h1>Hy : <pre>{List} =</pre></h1> */}
             {
                 isLogin ? (
-                    <div className='flex gap-1 items-center h-full '>
-                        <div className='h-10 w-10 rounded-full border border-white/50 relative overflow-hidden cursor-pointer'>
+                    <>
+                        <div className='flex gap-1 items-center h-full '>
+                            <div onClick={() => setIsShowDropDown(!isShowDropDown)} className='h-10 w-10 rounded-full border border-white/50 relative overflow-hidden cursor-pointer'>
 
-                            <Image
-                                alt='Profile Image'
-                                src={'/images/petani1.png'}
-                                fill
-                                className='object-cover'
-                                loading='eager'
-                                sizes='(max-widht:64-px) 100vw, (max-widht:1024px) 50vw, 25vw'
-                            />
+                                <Image
+                                    alt='Profile Image'
+                                    src={
+                                        profile && profile?.avatarSource != "LOCAL" ?
+                                            profile.avatarUrl
+                                            :
+                                            profile?.avatarUrl ?
+                                                `${url}/uploads/profile/${profile.avatarUrl}` :
+                                                `/images/petani1.png`
+                                    }
+                                    fill
+                                    className='object-cover'
+                                    loading='eager'
+                                    sizes='(max-widht:64-px) 100vw, (max-widht:1024px) 50vw, 25vw'
+                                />
+                            </div>
+                            <p className='text-[12px]'>Kiken</p>
                         </div>
-                        <p className='text-[12px]'>Kiken</p>
-                    </div>
+                        {
+                            isShowDropDown && (
+
+                                <div className='relative w-full'>
+                                    <div className='absolute'>
+                                        <ul className='bg-white rounded-2xl font-semibold py-2 px-4 text-neutral-600 text-[12px]'>
+                                            <li className='cursor-pointer'>
+                                                <div className='flex items-center gap-2 py-1.5'>
+                                                    <BsFillPersonFill />
+                                                    <p>Profile</p>
+                                                </div>
+                                            </li>
+                                            <li className='cursor-pointer'>
+                                                <div className='flex items-center gap-2 py-1.5'>
+                                                    <BsFillGearFill />
+                                                    <p>Settings</p>
+                                                </div>
+                                            </li>
+                                            <li className='cursor-pointer'>
+                                                <div className='flex items-center gap-2 py-1.5'>
+                                                    <BsLockFill />
+                                                    <p>Logout</p>
+                                                </div>
+                                            </li>
+                                        </ul>
+                                    </div>
+
+                                </div>
+                            )
+                        }
+                    </>
                 ) : (
                     <div className='flex gap-2 items-center h-full'>
                         <Link href="/login">

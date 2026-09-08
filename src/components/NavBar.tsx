@@ -1,10 +1,11 @@
 'use client'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import Image from 'next/image'
 import { BsLockFill, BsPersonFillAdd, BsList, BsArrowLeftSquareFill } from "react-icons/bs";
 import Link from 'next/link';
 import ImageProfileNavbar from './ImageProfileNavbar';
 import { fetchApi } from '@/lib/apiFetch';
+import { useDataStore } from '@/stores/dataStore';
 
 
 
@@ -19,8 +20,6 @@ const Menu = [
 
 
 const NavBar = () => {
-
-
 
 
     return (
@@ -38,7 +37,7 @@ const NavBar = () => {
 
 const DesktopNavbar = () => {
 
-    const [isLogin, setIsLogin] = useState<boolean>(true)
+
 
 
 
