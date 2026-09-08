@@ -4,6 +4,7 @@ import Link from 'next/link'
 import { useEffect, useState } from 'react'
 import { BsLockFill, BsFillPersonFill, BsFillGearFill } from "react-icons/bs";
 import { useDataStore } from '@/stores/dataStore';
+import useLogout from '@/hooks/useLogout';
 
 
 
@@ -14,9 +15,7 @@ const ImageProfileNavbar = () => {
 
     const [isShowDropDown, setIsShowDropDown] = useState<boolean>(false)
 
-    const logOut = () => {
-
-    }
+    const logOut = useLogout()
 
     useEffect(() => {
 
@@ -70,7 +69,7 @@ const ImageProfileNavbar = () => {
                                                 </div>
                                             </li>
                                             <li className='cursor-pointer'>
-                                                <div className='flex items-center gap-2 py-1.5'>
+                                                <div onClick={() => logOut.mutate()} className='flex items-center gap-2 py-1.5'>
                                                     <BsLockFill />
                                                     <p>Logout</p>
                                                 </div>
