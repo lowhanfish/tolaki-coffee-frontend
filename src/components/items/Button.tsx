@@ -5,6 +5,8 @@ interface ButtonProps {
     size?: string,
     children: ReactNode,
     type?: string,
+    htmlType?: "button" | "submit" | "reset",
+    disabled?: boolean,
     onClick?: () => void
 }
 
@@ -20,12 +22,13 @@ const modelMap: Record<string, string> = {
     box: "rounded-sm ",
 }
 
-const Button = ({ color = "primary", size = 'h-9', children, type = "box", onClick }: ButtonProps) => {
+const Button = ({ color = "primary", size = 'h-9', children, type = "box", htmlType = "button", disabled = false, onClick }: ButtonProps) => {
     return (
         <button
-            type="button"
+            type={htmlType}
+            disabled={disabled}
             className={`
-                cursor-pointer
+                cursor-pointer disabled:cursor-not-allowed disabled:opacity-60
                 border-2 border-white shadow-sm
                 ${color && colorMap[color]} ${size && size} ${type && modelMap[type]}
                 flex gap-2 justify-center items-center px-3 w-full

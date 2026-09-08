@@ -9,20 +9,18 @@ import Button from '@/components/items/Button';
 import { PiLockKeyDuotone } from 'react-icons/pi';
 import { useRouter } from 'next/navigation';
 import { useDataStore } from '@/stores/dataStore';
-import useGetProfile from '@/hooks/useGetProfile';
+import useCheckAuth from '@/hooks/useCheckAuth';
 
 export default function LoginPage() {
 
     const url = useDataStore(state => state.url)
-    const setProfile = useDataStore(state => state.setProfile)
-    const setIsLogin = useDataStore(state => state.setIsLogin)
 
     const [username, SetUsername] = useState<string>('');
     const [password, SetPassword] = useState<string>('');
     const [loadingState, setLoadingState] = useState<boolean>(false);
     const router = useRouter();
 
-    const { refetch: refetchProfile } = useGetProfile()
+    const checkAuth = useCheckAuth()
 
     // Handler untuk Google OAuth Login
     const handleSuccess = async (credentialResponse: { credential?: string }) => {
@@ -45,17 +43,7 @@ export default function LoginPage() {
             const data = await res.json();
             if (res.ok) {
                 console.log('Login Google NestJS Sukses:', data.user);
-                const { data: profile } = await refetchProfile()
-                if (!profile) {
-                    throw new Error("Gagal mengambil profil pengguna")
-                }
-                setProfile({
-                    name: profile.name,
-                    email: profile.email,
-                    avatarUrl: profile.avatarUrl,
-                    avatarSource: profile.avatarSource
-                })
-                setIsLogin("authenticated")
+                await checkAuth()
                 router.push('/home');
             } else {
                 console.error('Login NestJS Gagal:', data.message);
@@ -87,17 +75,7 @@ export default function LoginPage() {
             const data = await res.json();
 
             if (res.ok) {
-                const { data: profile } = await refetchProfile()
-                if (!profile) {
-                    throw new Error("Gagal mengambil profil pengguna")
-                }
-                setProfile({
-                    name: profile.name,
-                    email: profile.email,
-                    avatarUrl: profile.avatarUrl,
-                    avatarSource: profile.avatarSource
-                })
-                setIsLogin(true)
+                await checkAuth()
                 router.push('/home');
             } else {
                 alert(data.message || 'Username atau Password salah');
@@ -187,7 +165,7 @@ export default function LoginPage() {
                                 </div>
 
                                 <div>
-                                    <Button size="h-10">
+                                    <Button size="h-10" htmlType="submit" disabled={loadingState}>
                                         <p className="text-[13px] font-semibold text-white text-shadow-2xs">
                                             {loadingState ? 'Memuat...' : 'Login'}
                                         </p>
@@ -208,7 +186,8 @@ export default function LoginPage() {
 
                                 <div className="pt-2">
                                     <Button
-                                        type="button"
+                                        htmlType="button"
+                                        disabled={loadingState}
                                         size="h-12"
                                         onClick={() => router.back()}
                                         color="danger"

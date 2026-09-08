@@ -1,7 +1,5 @@
-import { fetchApi } from '@/lib/apiFetch'
 import { useDataStore } from '@/stores/dataStore'
-import { useQueries, useMutation, useQueryClient } from '@tanstack/react-query'
-import React from 'react'
+import { useMutation, useQueryClient } from '@tanstack/react-query'
 
 
 const postData = async (url: string) => {
@@ -12,8 +10,7 @@ const postData = async (url: string) => {
     });
 
     if (!res.ok) throw new Error("Gagal Logout");
-    const text = await res.text();
-    return text ? JSON.parse(text) : {};
+    return;
 };
 
 const useLogout = () => {
@@ -29,7 +26,7 @@ const useLogout = () => {
             queryClient.removeQueries({ queryKey: ["checkAuth"] });
             clearAuth();
         },
-        onError: (error: any) => {
+        onError: (error: Error) => {
             alert("Error : " + error)
         }
     })

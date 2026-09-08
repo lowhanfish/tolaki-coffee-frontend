@@ -4,6 +4,7 @@ import { Fragment, useState } from 'react'
 import Image from 'next/image'
 
 import { BsPlay } from "react-icons/bs";
+import useLogout from '@/hooks/useLogout';
 
 const Menu = [
     {
@@ -80,6 +81,8 @@ const Menu = [
 ]
 
 const AdminSidebar = () => {
+    const logout = useLogout()
+
     return (
         <div className='w-62.5 h-full text-neutral-800 shadow-lg bg-white'>
             <div>
@@ -102,7 +105,7 @@ const AdminSidebar = () => {
                     ))
                 }
 
-                <div className='div-menu cursor-pointer'>
+                <div onClick={() => logout.mutate()} className='div-menu cursor-pointer'>
                     <div className='icon-admin-menu'>🔐</div>
                     <div className='text-admin-menu'>Logout</div>
                 </div>

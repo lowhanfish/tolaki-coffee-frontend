@@ -1,7 +1,7 @@
 'use client'
 import Image from 'next/image'
 import Link from 'next/link'
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { BsLockFill, BsFillPersonFill, BsFillGearFill } from "react-icons/bs";
 import { useDataStore } from '@/stores/dataStore';
 import useLogout from '@/hooks/useLogout';
@@ -12,11 +12,6 @@ const ImageProfileNavbar = () => {
     const profile = useDataStore((state) => state.profile);
     const [isShowDropDown, setIsShowDropDown] = useState<boolean>(false)
     const logOut = useLogout()
-
-    useEffect(() => {
-
-    }, [isLogin, profile])
-
 
     return (
         <div className='h-full'>
@@ -41,10 +36,10 @@ const ImageProfileNavbar = () => {
                                     fill
                                     className='object-cover'
                                     loading='eager'
-                                    sizes='(max-widht:64-px) 100vw, (max-widht:1024px) 50vw, 25vw'
+                                    sizes='(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw'
                                 />
                             </div>
-                            <p className='text-[12px]'>Kiken</p>
+                            <p className='text-[12px]'>{profile?.name}</p>
                         </div>
                         {
                             isShowDropDown && (
@@ -77,7 +72,7 @@ const ImageProfileNavbar = () => {
                             )
                         }
                     </>
-                ) : (
+                ) : isLogin == "unauthenticated" ? (
                     <div className='flex gap-2 items-center h-full'>
                         <Link href="/login">
                             <button className='w-20 h-6 border border-white bg-linear-to-l from-amber-300 to-amber-500 rounded-2xl font-bold text-[10px] cursor-pointer flex justify-center items-center gap-2'>
@@ -86,7 +81,7 @@ const ImageProfileNavbar = () => {
                             </button>
                         </Link>
                     </div>
-                )
+                ) : null
             }
 
         </div>

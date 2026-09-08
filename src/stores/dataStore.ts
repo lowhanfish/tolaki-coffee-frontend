@@ -1,5 +1,4 @@
 import { create } from "zustand";
-import { persist } from "zustand/middleware";
 
 export interface Profile {
   name: string;
@@ -20,31 +19,24 @@ interface DataState {
   clearAuth: () => void;
 }
 
-export const useDataStore = create<DataState>()(
-  persist(
-    (set) => ({
-      url: "http://localhost:3001",
-      isLogin: "loading",
-      profile: null,
+export const useDataStore = create<DataState>()((set) => ({
+  url: "http://localhost:3001",
+  isLogin: "loading",
+  profile: null,
 
-      setIsLogin: (status) =>
-        set({
-          isLogin: status,
-        }),
-
-      setProfile: (profile) =>
-        set({
-          profile,
-        }),
-
-      clearAuth: () =>
-        set({
-          isLogin: "unauthenticated",
-          profile: null,
-        }),
+  setIsLogin: (status) =>
+    set({
+      isLogin: status,
     }),
-    {
-      name: "auth-profile",
-    },
-  ),
-);
+
+  setProfile: (profile) =>
+    set({
+      profile,
+    }),
+
+  clearAuth: () =>
+    set({
+      isLogin: "unauthenticated",
+      profile: null,
+    }),
+}));
