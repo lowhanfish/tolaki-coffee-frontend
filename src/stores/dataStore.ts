@@ -8,12 +8,14 @@ export interface Profile {
   avatarSource: string;
 }
 
+type AuthStatus = "loading" | "authenticated" | "unauthenticated";
+
 interface DataState {
   url: string;
-  isLogin: boolean;
+  isLogin: AuthStatus;
   profile: Profile | null;
 
-  setIsLogin: (status: boolean) => void;
+  setIsLogin: (status: AuthStatus) => void;
   setProfile: (profile: Profile | null) => void;
   clearAuth: () => void;
 }
@@ -22,7 +24,7 @@ export const useDataStore = create<DataState>()(
   persist(
     (set) => ({
       url: "http://localhost:3001",
-      isLogin: false,
+      isLogin: "loading",
       profile: null,
 
       setIsLogin: (status) =>
@@ -37,7 +39,7 @@ export const useDataStore = create<DataState>()(
 
       clearAuth: () =>
         set({
-          isLogin: false,
+          isLogin: "unauthenticated",
           profile: null,
         }),
     }),

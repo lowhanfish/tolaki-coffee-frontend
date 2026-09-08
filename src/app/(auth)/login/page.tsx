@@ -7,33 +7,31 @@ import { GoogleLogin } from '@react-oauth/google';
 import Image from 'next/image';
 import Button from '@/components/items/Button';
 import { PiLockKeyDuotone } from 'react-icons/pi';
-import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useDataStore } from '@/stores/dataStore';
-
-
+import useGetProfile from '@/hooks/useGetProfile';
 
 export default function LoginPage() {
 
     const url = useDataStore(state => state.url)
-
+    const setProfile = useDataStore(state => state.setProfile)
+    const setIsLogin = useDataStore(state => state.setIsLogin)
 
     const [username, SetUsername] = useState<string>('');
     const [password, SetPassword] = useState<string>('');
-    const [isLoading, setIsLoading] = useState<boolean>(false);
+    const [loadingState, setLoadingState] = useState<boolean>(false);
     const router = useRouter();
 
-
+    const { refetch: refetchProfile } = useGetProfile()
 
     // Handler untuk Google OAuth Login
     const handleSuccess = async (credentialResponse: { credential?: string }) => {
-        setIsLoading(true);
+        setLoadingState(true);
         try {
             if (!credentialResponse.credential) {
                 alert('Credential Google tidak ditemukan. Silakan coba lagi.');
                 return;
             }
-
             const res = await fetch(`${url}/auth/google`, {
                 method: 'POST',
                 headers: {
@@ -44,14 +42,20 @@ export default function LoginPage() {
                     credential: credentialResponse.credential,
                 }),
             });
-
             const data = await res.json();
-
             if (res.ok) {
                 console.log('Login Google NestJS Sukses:', data.user);
-                const response = {
-
+                const { data: profile } = await refetchProfile()
+                if (!profile) {
+                    throw new Error("Gagal mengambil profil pengguna")
                 }
+                setProfile({
+                    name: profile.name,
+                    email: profile.email,
+                    avatarUrl: profile.avatarUrl,
+                    avatarSource: profile.avatarSource
+                })
+                setIsLogin("authenticated")
                 router.push('/home');
             } else {
                 console.error('Login NestJS Gagal:', data.message);
@@ -61,14 +65,14 @@ export default function LoginPage() {
             console.error('Error saat menghubungi server backend:', error);
             alert('Gagal terhubung ke server NestJS.');
         } finally {
-            setIsLoading(false);
+            setLoadingState(false);
         }
     };
 
     // Handler untuk Form Manual (Username & Password)
     const handleManualLogin = async (e: React.FormEvent) => {
         e.preventDefault();
-        setIsLoading(true);
+        setLoadingState(true);
 
         try {
             const res = await fetch(`${url}/auth/login`, {
@@ -83,11 +87,18 @@ export default function LoginPage() {
             const data = await res.json();
 
             if (res.ok) {
-                localStorage.setItem('access_token', data.access_token);
-                if (data.refresh_token) {
-                    localStorage.setItem('refresh_token', data.refresh_token);
+                const { data: profile } = await refetchProfile()
+                if (!profile) {
+                    throw new Error("Gagal mengambil profil pengguna")
                 }
-                router.push('/dashboard');
+                setProfile({
+                    name: profile.name,
+                    email: profile.email,
+                    avatarUrl: profile.avatarUrl,
+                    avatarSource: profile.avatarSource
+                })
+                setIsLogin(true)
+                router.push('/home');
             } else {
                 alert(data.message || 'Username atau Password salah');
             }
@@ -95,9 +106,11 @@ export default function LoginPage() {
             console.error('Error saat login manual:', error);
             alert('Gagal terhubung ke server NestJS.');
         } finally {
-            setIsLoading(false);
+            setLoadingState(false);
         }
     };
+
+
 
     return (
         <main className="bg flex flex-col h-full text-neutral-800 md:p-1">
@@ -176,7 +189,7 @@ export default function LoginPage() {
                                 <div>
                                     <Button size="h-10">
                                         <p className="text-[13px] font-semibold text-white text-shadow-2xs">
-                                            {isLoading ? 'Memuat...' : 'Login'}
+                                            {loadingState ? 'Memuat...' : 'Login'}
                                         </p>
                                     </Button>
                                 </div>

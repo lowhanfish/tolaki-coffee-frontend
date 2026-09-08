@@ -6,15 +6,11 @@ import { BsLockFill, BsFillPersonFill, BsFillGearFill } from "react-icons/bs";
 import { useDataStore } from '@/stores/dataStore';
 import useLogout from '@/hooks/useLogout';
 
-
-
 const ImageProfileNavbar = () => {
     const url = useDataStore((state) => state.url);
     const isLogin = useDataStore((state) => state.isLogin);
     const profile = useDataStore((state) => state.profile);
-
     const [isShowDropDown, setIsShowDropDown] = useState<boolean>(false)
-
     const logOut = useLogout()
 
     useEffect(() => {
@@ -27,7 +23,7 @@ const ImageProfileNavbar = () => {
 
             {/* <h1>Hy : <pre>{List} =</pre></h1> */}
             {
-                isLogin ? (
+                isLogin == "authenticated" ? (
                     <>
                         <div className='flex gap-1 items-center h-full '>
                             <div onClick={() => setIsShowDropDown(!isShowDropDown)} className='h-10 w-10 rounded-full border border-white/50 relative overflow-hidden cursor-pointer'>

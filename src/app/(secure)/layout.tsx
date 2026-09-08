@@ -1,12 +1,11 @@
 'use client';
 
-import { ReactNode } from 'react'
+import { ReactNode, useEffect } from 'react'
 import AdminSidebar from '@/components/AdminSidebar'
 import { IoIosMenu } from "react-icons/io";
 import Image from 'next/image';
-import Link from 'next/link';
-
-
+import { useDataStore } from '@/stores/dataStore';
+import { useRouter } from 'next/navigation';
 
 
 
@@ -16,16 +15,22 @@ interface ChildrensProps {
 
 
 const layout = ({ children }: ChildrensProps) => {
+
+    const isLogin = useDataStore(state => state.isLogin)
+    const router = useRouter()
+
+    useEffect(() => {
+        console.log(isLogin)
+        if (isLogin == "unauthenticated") {
+            router.replace('/home');
+        }
+    }, [isLogin, router])
+
+
     return (
-
-
         <div className='w-full h-full flex flex-col text-neutral-800'>
-
-
-
             <div className='w-full h-full flex'>
                 <AdminSidebar />
-
                 <div className='flex-1 flex flex-col'>
                     <div className='h-17 bg-linear-to-l from-yellow-600 to-white items-center p-5 flex flex-row shadow-sm'>
                         <div className='flex-1 flex gap-2 items-center'>
@@ -36,8 +41,6 @@ const layout = ({ children }: ChildrensProps) => {
                         </div>
                         <div className='flex-1 flex gap-2 items-center justify-end'>
                             {/* <p className='text-white font-semibold text-[12px]'>Kiken SB</p> */}
-
-
                             <Image
                                 alt='Image User'
                                 src={`/images/user.png`}

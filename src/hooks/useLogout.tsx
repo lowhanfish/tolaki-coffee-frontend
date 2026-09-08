@@ -16,13 +16,9 @@ const postData = async (url: string) => {
     return text ? JSON.parse(text) : {};
 };
 
-
-
 const useLogout = () => {
     const url = useDataStore(state => state.url)
     const queryClient = useQueryClient()
-    const setIsLogin = useDataStore((state) => state.setIsLogin);
-    const setProfile = useDataStore((state) => state.setProfile);
     const clearAuth = useDataStore((state) => state.clearAuth);
 
     const useDataMutation = useMutation({
