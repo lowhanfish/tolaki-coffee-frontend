@@ -44,7 +44,7 @@ const ImageProfileNavbar = () => {
                                     }}
                                 />
                             </div>
-                            <p className='text-[12px]'>{profile?.name}</p>
+                            <p className='text-[12px] text-white'>{profile?.name}</p>
                         </div>
                         {
                             isShowDropDown && (

@@ -6,6 +6,9 @@ import { IoIosMenu } from "react-icons/io";
 import Image from 'next/image';
 import { useDataStore } from '@/stores/dataStore';
 import { useRouter } from 'next/navigation';
+import ImageProfileNavbar from '@/components/ImageProfileNavbar';
+
+
 
 
 
@@ -42,13 +45,7 @@ const SecureLayout = ({ children }: ChildrensProps) => {
                                     </div>
                                     <div className='flex-1 flex gap-2 items-center justify-end'>
                                         {/* <p className='text-white font-semibold text-[12px]'>Kiken SB</p> */}
-                                        <Image
-                                            alt='Image User'
-                                            src={`/images/user.png`}
-                                            width={39}
-                                            height={39}
-                                            className='object-center rounded-full border-2 border-white cursor-pointer'
-                                        />
+                                        <ImageProfileNavbar />
                                     </div>
                                 </div>
 

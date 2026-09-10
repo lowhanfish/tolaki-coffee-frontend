@@ -1,34 +1,43 @@
 "use client"
 
-import { useState } from 'react'
 import Image from 'next/image'
 import { BsBagPlus } from "react-icons/bs";
 import Link from 'next/link';
+import { ProductInterface } from "@/features/product/types"
+import { useDataStore } from '@/stores/dataStore';
 
-
-
-
-interface ProductItemPropsItem {
-    id: number,
-    title: string,
-    subtitle: string,
-    price: number,
-    sat: string,
-    img: string,
+interface LegacyProductItem {
+    title: string
+    subtitle: string
+    price: number
+    sat: string
+    img: string
 }
 
 interface ProductItemProps {
-    item: ProductItemPropsItem
+    item: ProductInterface | LegacyProductItem
 }
 
 const ProductItem = ({ item }: ProductItemProps) => {
-    const [openModal, setOpenModal] = useState<boolean>(false)
+    const url = useDataStore((state) => state.url)
+    const isApiProduct = 'unit_price' in item
+    const filePath = isApiProduct
+        ? item.files[0]?.path.replace(/^\.\//, '').replaceAll('\\', '/')
+        : undefined
+    const imageUrl = isApiProduct
+        ? filePath
+            ? `${url}/${filePath}`
+            : '/images/no-image.png'
+        : item.img
+    const subtitle = isApiProduct ? item.description ?? '' : item.subtitle
+    const unitPrice = isApiProduct ? item.unit_price : item.sat
+
     return (
         // <div>
         <div className='w-full bg-white rounded-lg' >
             <div className='relative h-50'>
                 <Image
-                    src={item.img}
+                    src={imageUrl}
                     alt='Product'
                     fill
                     className='object-cover rounded-t-lg'
@@ -39,12 +48,12 @@ const ProductItem = ({ item }: ProductItemProps) => {
             <div className='px-5 py-3 relative'>
                 <div>
                     <p className='text-item-header'>{item.title}</p>
-                    <p className='text-item-body'>{item.subtitle}</p>
-                    <p className='text-item-regular pt-2'><span className='text-item-header'>Rp. {item.price}</span>/{item.sat}</p>
+                    <p className='text-item-body'>{subtitle}</p>
+                    <p className='text-item-regular pt-2'><span className='text-item-header'>Rp. {Number(item.price)}</span>/{unitPrice}</p>
                 </div>
                 {/* <div className='bg-red-400'> */}
                 <Link href="/product/detail">
-                    <button onClick={() => setOpenModal(true)} className='absolute right-3 bottom-3 rounded-full border border-yellow-600 w-10 h-10 flex justify-center items-center cursor-pointer'>
+                    <button className='absolute right-3 bottom-3 rounded-full border border-yellow-600 w-10 h-10 flex justify-center items-center cursor-pointer'>
                         <BsBagPlus className='text-yellow-600 font-bold' />
                     </button>
                 </Link>

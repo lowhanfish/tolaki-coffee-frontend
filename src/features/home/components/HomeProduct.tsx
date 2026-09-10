@@ -7,7 +7,7 @@ import Link from 'next/link';
 import { fetchApi } from '@/lib/apiFetch';
 import { useQuery } from '@tanstack/react-query';
 import { useDataStore } from '@/stores/dataStore';
-
+import { ProductListInterface, ProductInterface } from "@/features/product/types"
 
 
 const List = [
@@ -24,13 +24,13 @@ const HomeProduct = () => {
     const limit = 4
     const search = ""
 
-    const { data, isLoading } = useQuery({
-        queryFn: () => fetchApi<>(`${url}/product/read?search=${search}&skip=${skip}&limit=${limit}`),
+    const { data: ListData, isLoading } = useQuery({
+        queryFn: () => fetchApi<ProductListInterface>(`${url}/product/read?search=${search}&skip=${skip}&limit=${limit}`),
         queryKey: ["product", skip, limit, search]
     })
 
-    if (data) {
-        console.log(data?.data)
+    if (ListData) {
+        console.log(ListData?.data)
     }
 
 
@@ -54,7 +54,8 @@ const HomeProduct = () => {
 
             <div className='grid grid-cols-12 md:flex-row gap-3 w-full pt-3'>
                 {
-                    List.map((item, index) => (
+
+                    List.map((item, index: number) => (
                         <div className='col-span-12 md:col-span-6 xl:col-span-3' key={index}>
                             <ProductItem
                                 item={item}
@@ -62,6 +63,14 @@ const HomeProduct = () => {
                         </div>
 
                     ))
+                    // ListData?.data.map((item: ProductInterface, index: number) => (
+                    //     <div className='col-span-12 md:col-span-6 xl:col-span-3' key={index}>
+                    //         <ProductItem
+                    //             item={item}
+                    //         />
+                    //     </div>
+
+                    // ))
                 }
 
 

@@ -2,13 +2,17 @@
 
 import { useState, Dispatch, SetStateAction } from "react"
 
+
 import Modal from '@/components/items/Modal'
 import Button from '@/components/items/Button'
 import InputField from "@/components/items/InputField"
 import InputFile from "@/components/items/InputFile"
 import InputRichText from "@/components/items/InputRichText"
+import { fetchApi } from "@/lib/apiFetch"
+import { useQuery, useQueryClient, useMutation } from "@tanstack/react-query"
 
-
+import { NewsResponseInterface, NewsCreateInterface } from "../types"
+import InputtextArea from "@/components/items/InputtextArea"
 
 
 
@@ -17,32 +21,31 @@ interface createProps {
     SetModal: Dispatch<SetStateAction<boolean>>
 }
 
-interface formProps {
-    id: string,
-    title: string,
-    price: number,
-    unit_price: string,
-    stock: number,
-    desc: string,
-    img: File[],
-}
+// interface NewsCreateInterface {
+//     id: string,
+//     title: string,
+//     price: number,
+//     unit_price: string,
+//     stock: number,
+//     desc: string,
+//     img: File[],
+// }
 
 const Create = ({ modal, SetModal }: createProps) => {
-    const [form, setForm] = useState<formProps>({
+    const [form, setForm] = useState<NewsCreateInterface>({
         id: "",
         title: "",
-        price: 0,
-        unit_price: "",
-        stock: 0,
-        desc: "",
-        img: [],
+        description: "",
+        news: "",
+        source: "",
+        file: [],
     })
 
     const saveData = () => {
         console.log(form)
     }
 
-    const SetObjForm = (data: string | number | File[], key: keyof formProps) => {
+    const SetObjForm = (data: string | number | File[], key: keyof NewsCreateInterface) => {
         setForm({
             ...form,
             [key]: data
@@ -54,49 +57,33 @@ const Create = ({ modal, SetModal }: createProps) => {
             <div className="flex gap-2 flex-col py-5 px-3">
                 <div>
                     <InputField
-                        title="Product Name"
+                        title="Title"
                         type="text"
                         value={form.title}
                         onChange={(e) => SetObjForm(e, "title")}
                     />
                 </div>
-                <div className="flex gap-2 w-full">
-                    <InputField
-                        title="Price"
-                        type="number"
-                        value={form.price}
-                        onChange={(e) => SetObjForm(e, "price")}
-                    />
-
-                    <InputField
-                        title="Unit Price"
-                        type="text"
-                        value={form.unit_price}
-                        onChange={(e) => SetObjForm(e, "unit_price")}
+                <div>
+                    <InputtextArea
+                        value={form.description}
+                        onChange={(e) => SetObjForm(e, "description")}
+                        title="Description"
                     />
                 </div>
 
                 <div className="w-full">
-                    {/* <InputtextArea
-                        value={form.desc}
-                        onChange={(e) => SetObjForm(e, "desc")}
-                        title="Product Description"
-                    /> */}
-
                     <InputRichText
-                        title="Produce Description"
-                        value={form.desc}
-                        onChange={(htmlText) => SetObjForm(htmlText, 'desc')} // Mengirim data HTML kembali ke state 'desc'
+                        title="News"
+                        value={form.news}
+                        onChange={(htmlText) => SetObjForm(htmlText, 'news')} // Mengirim data HTML kembali ke state 'desc'
                     />
                 </div>
 
                 <div className="w-full">
-
-
                     <InputFile
-                        title="Product Images"
+                        title="Image News"
                         onChange={(val) => {
-                            SetObjForm(val, "img")
+                            SetObjForm(val, "file")
                         }}
                     />
                 </div>

@@ -1,4 +1,4 @@
-export interface Files {
+export interface FilesInterface {
   id: string;
   title: string;
   type: string;
@@ -10,15 +10,22 @@ export interface Files {
   createdBy: string;
 }
 
-export interface ProductItem {
+export interface ProductInterface {
   id: string;
   title: string;
-  price: number;
+  price: number | string;
   unit_price: string;
-  description: string;
+  description: string | null;
   createdAt: string;
   updatedAt: string;
   createdBy: string;
   companyProfileId: string;
-  files: Files;
+  files: FilesInterface[];
+}
+
+export interface ProductListInterface {
+  total: number;
+  skip: number;
+  limit: number;
+  data: ProductInterface[];
 }
