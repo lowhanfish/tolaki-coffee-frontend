@@ -1,8 +1,8 @@
 import React from 'react'
-import HomeHeader from './components/HomeHeader'
-import HomeAbout from './components/HomeAbout'
-import HomeProduct from './components/HomeProduct'
-import HomeWhy from './components/HomeWhy'
+import HomeHeader from '@/features/home/components/HomeHeader'
+import HomeAbout from '@/features/home/components/HomeAbout'
+import HomeProduct from '@/features/home/components/HomeProduct'
+import HomeWhy from '@/features/home/components/HomeWhy'
 
 
 

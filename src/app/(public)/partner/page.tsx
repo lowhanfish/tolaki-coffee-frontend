@@ -1,9 +1,9 @@
 import React from 'react'
 import HeaderPage from '@/components/HeaderPage'
-import Impact from './components/Impact'
-import Stories from './components/Stories'
-import Standard from './components/Standard'
-import Joinus from './components/Joinus'
+import Impact from '@/features/partner/components/Impact'
+import Stories from '@/features/partner/components/Stories'
+import Standard from '@/features/partner/components/Standard'
+import Joinus from '@/features/partner/components/Joinus'
 
 
 

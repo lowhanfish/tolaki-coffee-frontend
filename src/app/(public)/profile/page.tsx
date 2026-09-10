@@ -1,5 +1,5 @@
 import React from 'react'
-import ContentProfile from './components/ContentProfile'
+import ContentProfile from '@/features/profile/components/ContentProfile'
 import HeaderPage from '@/components/HeaderPage'
 
 const page = () => {

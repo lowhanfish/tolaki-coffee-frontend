@@ -12,6 +12,13 @@ const ImageProfileNavbar = () => {
     const profile = useDataStore((state) => state.profile);
     const [isShowDropDown, setIsShowDropDown] = useState<boolean>(false)
     const logOut = useLogout()
+    const fallbackAvatarUrl = '/images/petani1.png'
+    const avatarUrl = profile?.avatarUrl
+        ? profile.avatarSource !== 'LOCAL'
+            ? profile.avatarUrl
+            : `${url}/uploads/profile/${profile.avatarUrl}`
+        : fallbackAvatarUrl
+    const isLocalAvatar = avatarUrl.startsWith(`${url}/`)
 
     return (
         <div className='h-full'>
@@ -25,18 +32,16 @@ const ImageProfileNavbar = () => {
 
                                 <Image
                                     alt='Profile Image'
-                                    src={
-                                        profile && profile?.avatarSource != "LOCAL" ?
-                                            profile.avatarUrl
-                                            :
-                                            profile?.avatarUrl ?
-                                                `${url}/uploads/profile/${profile.avatarUrl}` :
-                                                `/images/petani1.png`
-                                    }
+                                    src={avatarUrl}
                                     fill
                                     className='object-cover'
                                     loading='eager'
                                     sizes='(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw'
+                                    unoptimized={isLocalAvatar}
+                                    onError={(event) => {
+                                        event.currentTarget.srcset = ''
+                                        event.currentTarget.src = fallbackAvatarUrl
+                                    }}
                                 />
                             </div>
                             <p className='text-[12px]'>{profile?.name}</p>

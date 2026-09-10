@@ -1,6 +1,6 @@
 import HeaderPage from '@/components/HeaderPage'
-import ListNews from './components/ListNews'
-import SideBarNews from './components/SideBarNews'
+import ListNews from '@/features/news/components/ListNews'
+import SideBarNews from '@/features/news/components/SideBarNews'
 
 const page = () => {
     return (

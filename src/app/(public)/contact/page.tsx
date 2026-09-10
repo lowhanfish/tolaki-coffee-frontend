@@ -1,7 +1,8 @@
 import HeaderPage from '@/components/HeaderPage'
-import InformationContact from './components/InformationContact'
-import SendMessage from './components/SendMessage'
-import ConnectContact from './components/ConnectContact'
+import InformationContact from '@/features/contact/components/InformationContact'
+import SendMessage from '@/features/contact/components/SendMessage'
+import ConnectContact from '@/features/contact/components/ConnectContact'
+
 
 
 

@@ -1,7 +1,7 @@
 import React from 'react'
 import HeaderPage from '@/components/HeaderPage'
-import SideBarProduct from './components/SideBarProduct'
-import ContentProduct from './components/ContentProduct'
+import SideBarProduct from '@/features/product/components/SideBarProduct'
+import ContentProduct from '@/features/product/components/ContentProduct'
 
 
 const page = () => {

@@ -1,7 +1,12 @@
+"use client"
+
 import React from 'react'
 import { BsArrowRight } from "react-icons/bs";
 import ProductItem from '@/components/ProductItem';
 import Link from 'next/link';
+import { fetchApi } from '@/lib/apiFetch';
+import { useQuery } from '@tanstack/react-query';
+import { useDataStore } from '@/stores/dataStore';
 
 
 
@@ -12,8 +17,24 @@ const List = [
     { id: 2, title: "Tolaki Robusta", subtitle: "Medium Roast", price: 85000, sat: "200gr", img: "/images/kopi2.png" },
 ]
 
-
 const HomeProduct = () => {
+
+    const url = useDataStore(state => state.url)
+    const skip = 0;
+    const limit = 4
+    const search = ""
+
+    const { data, isLoading } = useQuery({
+        queryFn: () => fetchApi<>(`${url}/product/read?search=${search}&skip=${skip}&limit=${limit}`),
+        queryKey: ["product", skip, limit, search]
+    })
+
+    if (data) {
+        console.log(data?.data)
+    }
+
+
+
     return (
         <div className='text-neutral-800'>
             <p className='title-text color-main'>ETALASE PRODUK</p>
