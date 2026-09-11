@@ -45,7 +45,7 @@ const Page = () => {
 
 
     const [pageShow, setPageShow] = useState<number>(5)
-    const [limit, setLimit] = useState<number>(1)
+    const [limit, setLimit] = useState<number>(8)
     const [total, setTotal] = useState<number>(100)
     const [skip, setSkip] = useState<number>(1)
     const [search, setSearch] = useState<string>("")
@@ -93,6 +93,7 @@ const Page = () => {
                                                 src={`${url}/uploads/news/${item.file}`}
                                                 fill
                                                 loading="eager"
+                                                sizes='100vw, 50vw, 25vw'
                                             />
                                         </div>
                                         <div className='flex-1 p-3 rounded-sm'>
