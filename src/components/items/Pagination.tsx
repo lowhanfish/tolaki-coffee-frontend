@@ -1,142 +1,149 @@
-import { useEffect, useState } from 'react'
+'use client'
+
+import { useState } from 'react'
 
 interface PaginationProps {
-    total: number,
-    limit: number,
+    total: number
+    limit: number
+    pageShow?: number
+    page?: number
+    onPageChange?: (page: number) => void
 }
 
-const Pagination = ({ total, limit }: PaginationProps) => {
+const Pagination = ({
+    total,
+    limit,
+    pageShow = 5,
+    page,
+    onPageChange,
+}: PaginationProps) => {
+    const [internalPage, setInternalPage] = useState(1)
 
-    const [start, setStart] = useState(1)
-    const [data, setData] = useState(1)
-    const [dataLengt, setDataLength] = useState(2)
-    const [arr, setArr] = useState<number[]>([])
+    const safeLimit = Math.max(1, Math.floor(limit))
+    const safePageShow = Math.max(3, Math.floor(pageShow))
+    const totalPages = Math.ceil(Math.max(0, total) / safeLimit)
+    const requestedPage = page ?? internalPage
+    const currentPage = totalPages === 0
+        ? 1
+        : Math.min(Math.max(1, requestedPage), totalPages)
 
-    const setArrData = () => {
-        var newArr: any[] = [];
-        if ((Math.ceil(total / limit)) > limit) {
-            newArr = Array.from({ length: limit }, (_, index) => start + index);
-        } else {
-            newArr = Array.from({ length: Math.ceil(total / limit) }, (_, index) => start + index);
+    const hasHiddenPages = totalPages > safePageShow
+    const middlePageCount = Math.max(1, safePageShow - 2)
+    const middleStart = Math.min(
+        Math.max(2, currentPage - Math.floor(middlePageCount / 2)),
+        Math.max(2, totalPages - middlePageCount),
+    )
+    const groupStart = hasHiddenPages ? middleStart : 1
+    const groupEnd = hasHiddenPages
+        ? Math.min(totalPages - 1, groupStart + middlePageCount - 1)
+        : totalPages
+    const pages = Array.from(
+        { length: Math.max(0, groupEnd - groupStart + 1) },
+        (_, index) => groupStart + index,
+    )
+
+    const changePage = (nextPage: number) => {
+        if (totalPages === 0) return
+
+        const validPage = Math.min(Math.max(1, nextPage), totalPages)
+
+        if (page === undefined) {
+            setInternalPage(validPage)
         }
-        setArr(newArr)
+
+        onPageChange?.(validPage)
     }
 
-    const next = () => {
-        data < dataLengt && setData(data + 1)
-        if (data % limit == 0) {
-            setStart(data + 1);
-            setArrData()
-        }
-    }
-    const prev = () => {
-        if (data > 1) {
-            setData(data - 1)
-            if (data % limit === 1) {
-                setStart(data - limit);
-                setArrData()
-            }
-        }
-    }
-
-    useEffect(() => {
-        setDataLength(Math.ceil(total / limit))
-        setArrData();
-    }, [dataLengt, limit, start, data])
+    const isPreviousDisabled = totalPages === 0 || currentPage === 1
+    const isNextDisabled = totalPages === 0 || currentPage === totalPages
+    const navigationButtonClass = `
+        flex min-h-3 min-w-10 cursor-pointer items-center justify-center
+        rounded-sm border border-amber-600/20 bg-neutral-600/80 p-1 shadow-sm
+        hover:bg-neutral-600 disabled:cursor-not-allowed disabled:opacity-40
+    `
+    const pageButtonClass = (isActive: boolean) => `
+        ${isActive ? 'bg-amber-500' : 'bg-neutral-600/30'}
+        flex min-h-3 min-w-7 cursor-pointer items-center justify-center
+        rounded-full p-1 shadow-sm hover:bg-neutral-600/60
+    `
 
     return (
-
-        <div>
-            {/* {data} */}
-            <div className='flex gap-1'>
+        <nav aria-label="Pagination">
+            <div className="flex gap-1">
                 <button
-                    onClick={() => { prev() }}
-                    className='bg-neutral-600/80 hover:bg-neutral-600 flex justify-center items-center p-1 rounded-sm shadow-sm border border-amber-600/20 cursor-pointer min-h-3 min-w-10'>
-                    <span className='text-white text-[12px] rotate-270'>⏏︎</span>
+                    type="button"
+                    onClick={() => changePage(currentPage - 1)}
+                    disabled={isPreviousDisabled}
+                    aria-label="Halaman sebelumnya"
+                    className={navigationButtonClass}
+                >
+                    <span aria-hidden="true" className="text-xs text-white">‹</span>
                 </button>
 
-                {
-                    data > limit && (
-                        <>
-                            <button
-                                onClick={() => {
-                                    setData(1);
-                                    setStart(1);
-                                    setArrData();
-                                }}
-                                className={`
-                                    ${data == 1 ? 'bg-amber-500' : 'bg-neutral-600/30'} hover:bg-neutral-600/60 
-                                    flex justify-center items-center 
-                                    p-1 min-h-3 min-w-7
-                                    rounded-full shadow-sm 
-                                    cursor-pointer
-                                `}
-                            >
-                                <span className='text-white text-[10px]'>1</span>
-                            </button>
-
-                            <button className='bg-neutral-600/10 hover:bg-neutral-600/20 flex justify-center items-center p-1 rounded-full shadow-sm cursor-pointer min-h-3 min-w-7'>
-                                <span className='text-neutral-800 text-[10px]'>...</span>
-                            </button>
-                        </>
-                    )
-                }
-
-
-                {
-                    arr.map((item, index) => (
-                        <button key={index}
-                            onClick={() => setData(item)}
-                            className={`
-                            ${data == item ? 'bg-amber-500' : 'bg-neutral-600/30'} hover:bg-neutral-600/60
-                            flex justify-center items-center 
-                            p-1 min-h-3 min-w-7
-                            rounded-full shadow-sm cursor-pointer`}>
-                            <p className='text-white text-[10px]'>{item}</p>
+                {groupStart > 1 && (
+                    <>
+                        <button
+                            type="button"
+                            onClick={() => changePage(1)}
+                            aria-label="Halaman 1"
+                            className={pageButtonClass(currentPage === 1)}
+                        >
+                            <span className="text-[10px] text-white">1</span>
                         </button>
-                    ))
-                }
 
-                {
-                    data <= (dataLengt - limit) && (
-                        <>
-                            <button className='bg-neutral-600/10 hover:bg-neutral-600/20 flex justify-center items-center p-1 rounded-full shadow-sm cursor-pointer min-h-3 min-w-7'>
-                                <span className='text-neutral-800 text-[10px]'>...</span>
-                            </button>
-                            <button
-                                onClick={() => {
-                                    setData(dataLengt)
-                                    setStart(dataLengt - (limit - 1));
-                                    setArrData();
-                                }}
-                                className={`
-                                    ${data == dataLengt ? 'bg-amber-500' : 'bg-neutral-600/30'} hover:bg-neutral-600/60 
-                                    flex justify-center items-center 
-                                    p-1 min-h-3 min-w-7
-                                    rounded-full shadow-sm 
-                                    cursor-pointer
-                                `}
-                            >
-                                <span className='text-white text-[10px]'>{dataLengt}</span>
-                            </button>
-                        </>
-                    )
-                }
+                        <span
+                            aria-hidden="true"
+                            className="flex min-h-3 min-w-7 items-center justify-center rounded-full bg-neutral-600/10 p-1 text-[10px] text-neutral-800 shadow-sm"
+                        >
+                            …
+                        </span>
+                    </>
+                )}
+
+                {pages.map((item) => (
+                    <button
+                        type="button"
+                        key={item}
+                        onClick={() => changePage(item)}
+                        aria-label={`Halaman ${item}`}
+                        aria-current={currentPage === item ? 'page' : undefined}
+                        className={pageButtonClass(currentPage === item)}
+                    >
+                        <span className="text-[10px] text-white">{item}</span>
+                    </button>
+                ))}
+
+                {groupEnd < totalPages && (
+                    <>
+                        <span
+                            aria-hidden="true"
+                            className="flex min-h-3 min-w-7 items-center justify-center rounded-full bg-neutral-600/10 p-1 text-[10px] text-neutral-800 shadow-sm"
+                        >
+                            …
+                        </span>
+
+                        <button
+                            type="button"
+                            onClick={() => changePage(totalPages)}
+                            aria-label={`Halaman ${totalPages}`}
+                            className={pageButtonClass(currentPage === totalPages)}
+                        >
+                            <span className="text-[10px] text-white">{totalPages}</span>
+                        </button>
+                    </>
+                )}
+
                 <button
-                    onClick={() => { next() }}
-                    className={`
-                    bg-neutral-600/80 
-                    hover:bg-neutral-600 
-                    flex justify-center items-center 
-                    p-1 min-h-3 min-w-10
-                    rounded-sm shadow-sm  
-                    cursor-pointer
-                    `}>
-                    <span className='text-white text-[12px] -rotate-270'>⏏︎</span>
+                    type="button"
+                    onClick={() => changePage(currentPage + 1)}
+                    disabled={isNextDisabled}
+                    aria-label="Halaman berikutnya"
+                    className={navigationButtonClass}
+                >
+                    <span aria-hidden="true" className="text-xs text-white">›</span>
                 </button>
-
             </div>
-        </div>
+        </nav>
     )
 }
 

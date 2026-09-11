@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 
 import { BsFillPencilFill, BsFillTrashFill, } from "react-icons/bs";
 import { FaMagnifyingGlass, FaGear } from "react-icons/fa6";
@@ -11,7 +11,10 @@ import Modal from "@/components/items/Modal"
 import Create from './components/create';
 import Pagination from '@/components/items/Pagination';
 import SelectListShow from '@/components/items/SelectListShow';
-
+import { useDataStore } from '@/stores/dataStore';
+import { useQuery } from '@tanstack/react-query';
+import { fetchApi } from '@/lib/apiFetch';
+import { NewsResponseListInterface } from "./types"
 
 
 
@@ -31,6 +34,7 @@ const List = [
 
 const Page = () => {
 
+    const url = useDataStore(state => state.url)
 
     const test = () => {
         alert("Hy saya di click")
@@ -38,7 +42,26 @@ const Page = () => {
 
     const [modal, SetModal] = useState<boolean>(false)
     const [modalCreate, SetModalCreate] = useState<boolean>(false)
-    const [pageShow, setPageShow] = useState<number | string>(8)
+
+
+    const [pageShow, setPageShow] = useState<number>(5)
+    const [limit, setLimit] = useState<number>(1)
+    const [total, setTotal] = useState<number>(100)
+    const [skip, setSkip] = useState<number>(1)
+    const [search, setSearch] = useState<string>("")
+
+    const { data: Data, isLoading } = useQuery({
+        queryFn: () => fetchApi<NewsResponseListInterface>(`${url}/news/read?search=${encodeURIComponent(search)}&skip=${(skip - 1)}&limit=${limit}`),
+        queryKey: ["product-admin", skip, limit]
+    })
+
+    useEffect(() => {
+        if (Data) {
+            console.log("Telaso")
+            console.log(Data)
+            setTotal(Data.total)
+        }
+    }, [Data])
 
     return (
         <div className=''>
@@ -58,7 +81,7 @@ const Page = () => {
             <div className='flex-1 mt-2'>
                 <div className="grid grid-cols-12 gap-2">
                     {
-                        List.map((item, index) => (
+                        Data?.data.map((item, index) => (
                             <div key={index} className='col-span-6'>
                                 <div className='relative h-full border-7 border-white rounded-xl shadow-sm'>
                                     <div className='shadow-sm h-full rounded-lg flex '>
@@ -67,7 +90,7 @@ const Page = () => {
                                             <Image
                                                 className='object-cover rounded-l-md'
                                                 alt='Petani'
-                                                src={item.img}
+                                                src={`${url}/uploads/news/${item.file}`}
                                                 fill
                                                 loading="eager"
                                             />
@@ -102,12 +125,19 @@ const Page = () => {
             </div>
             <div className='grid grid-cols-12 py-5'>
                 <div className='col-span-10'>
-                    <Pagination total={999} limit={5} />
+                    <Pagination
+                        total={total}
+                        limit={Number(limit)}
+                        pageShow={pageShow}
+                        page={skip}
+                        onPageChange={setSkip}
+                    />
                 </div>
                 <div className='col-span-2'>
                     <SelectListShow
                         onChange={(val) => {
-                            setPageShow(val)
+                            setLimit(val as number)
+                            setSkip(1)
                         }}
                         size='sm' />
                 </div>

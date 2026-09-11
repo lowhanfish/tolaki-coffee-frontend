@@ -16,5 +16,12 @@ export interface NewsCreateInterface {
   description: string;
   news: string;
   source: string;
-  file: File[];
+  file: File | null;
+}
+
+export interface NewsResponseListInterface {
+  skip: number;
+  limit: number;
+  total: number;
+  data: NewsResponseInterface[];
 }

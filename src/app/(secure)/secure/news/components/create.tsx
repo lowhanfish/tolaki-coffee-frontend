@@ -11,8 +11,9 @@ import InputRichText from "@/components/items/InputRichText"
 import { fetchApi } from "@/lib/apiFetch"
 import { useQuery, useQueryClient, useMutation } from "@tanstack/react-query"
 
-import { NewsResponseInterface, NewsCreateInterface } from "../types"
+import { NewsCreateInterface } from "../types"
 import InputtextArea from "@/components/items/InputtextArea"
+import { useDataStore } from "@/stores/dataStore"
 
 
 
@@ -21,52 +22,94 @@ interface createProps {
     SetModal: Dispatch<SetStateAction<boolean>>
 }
 
-// interface NewsCreateInterface {
-//     id: string,
-//     title: string,
-//     price: number,
-//     unit_price: string,
-//     stock: number,
-//     desc: string,
-//     img: File[],
-// }
-
 const Create = ({ modal, SetModal }: createProps) => {
+
+    const querClient = useQueryClient()
+    const url = useDataStore(state => state.url)
+
     const [form, setForm] = useState<NewsCreateInterface>({
         id: "",
         title: "",
         description: "",
         news: "",
         source: "",
-        file: [],
+        file: null,
+    })
+
+    const emptyForm = () => {
+        setForm({
+            id: "",
+            title: "",
+            description: "",
+            news: "",
+            source: "",
+            file: null,
+        })
+    }
+
+    const setDataMutation = useMutation({
+        mutationFn: (formData: FormData) => fetchApi(`${url}/news/create`, {
+            method: "POST",
+            body: formData
+        }),
+        onSuccess: () => {
+            querClient.invalidateQueries({ queryKey: ["product-admin"] })
+            SetModal(false);
+            emptyForm()
+        },
+        onError: (err: any) => {
+            alert(`Error : ${err}`)
+        }
     })
 
     const saveData = () => {
-        console.log(form)
+        const formData = new FormData()
+        formData.append("title", form.title)
+        formData.append("description", form.description)
+        formData.append("news", form.news)
+        formData.append("source", form.source)
+
+        if (form.file) {
+            formData.append("file", form.file)
+        }
+
+
+        setDataMutation.mutate(formData)
     }
 
-    const SetObjForm = (data: string | number | File[], key: keyof NewsCreateInterface) => {
-        setForm({
-            ...form,
-            [key]: data
-        })
+
+
+    // const SetObjForm = (data: string | number | File | null, key: keyof NewsCreateInterface) => {
+    //     setForm({
+    //         ...form,
+    //         [key]: data
+    //     })
+    // }
+
+    const SetObjForm = <K extends keyof NewsCreateInterface>(value: NewsCreateInterface[K], key: K) => {
+        setForm((prev) => ({
+            ...prev,
+            [key]: value,
+        }))
     }
 
     return (
         <Modal size="md" openModal={modal} setOpenModal={SetModal} color="primary" title="Config">
             <div className="flex gap-2 flex-col py-5 px-3">
+
                 <div>
                     <InputField
                         title="Title"
                         type="text"
                         value={form.title}
-                        onChange={(e) => SetObjForm(e, "title")}
+                        onChange={(e) => SetObjForm(e as string, "title")}
                     />
                 </div>
+
                 <div>
                     <InputtextArea
                         value={form.description}
-                        onChange={(e) => SetObjForm(e, "description")}
+                        onChange={(e) => SetObjForm(e as string, "description")}
                         title="Description"
                     />
                 </div>
@@ -82,8 +125,10 @@ const Create = ({ modal, SetModal }: createProps) => {
                 <div className="w-full">
                     <InputFile
                         title="Image News"
+                        multiple={false}
                         onChange={(val) => {
-                            SetObjForm(val, "file")
+                            const selectedFile = val.length > 0 ? val[0] : null;
+                            SetObjForm(selectedFile, "file");
                         }}
                     />
                 </div>

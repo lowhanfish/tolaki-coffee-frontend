@@ -3,10 +3,11 @@ import { BsFolder2Open } from "react-icons/bs";
 
 interface InputFieldProps {
     title?: string,
+    multiple?: boolean,
     onChange: (value: File[]) => void,
 }
 
-const InputFile = ({ title, onChange }: InputFieldProps) => {
+const InputFile = ({ title, multiple = true, onChange }: InputFieldProps) => {
 
     const [fileLength, SetFileLength] = useState(0)
 
@@ -17,7 +18,7 @@ const InputFile = ({ title, onChange }: InputFieldProps) => {
                 <input
                     className="input-file"
                     type="file"
-                    multiple
+                    multiple={multiple}
                     accept="image/*" // batasi khusus gambar jika ini form produk
                     onChange={(e) => {
                         if (e.target.files) {

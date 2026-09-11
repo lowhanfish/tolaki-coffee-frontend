@@ -39,7 +39,6 @@ const refreshToken = async () => {
 
   if (!res.ok) {
     if (typeof window !== "undefined") {
-      //   window.location.href = "/login";
       useDataStore.getState().clearAuth();
     }
     throw new Error("Refresh Token Invalid..!");
