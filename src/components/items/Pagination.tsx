@@ -57,14 +57,14 @@ const Pagination = ({
     const isPreviousDisabled = totalPages === 0 || currentPage === 1
     const isNextDisabled = totalPages === 0 || currentPage === totalPages
     const navigationButtonClass = `
-        flex min-h-3 min-w-10 cursor-pointer items-center justify-center
-        rounded-sm border border-amber-600/20 bg-neutral-600/80 p-1 shadow-sm
-        hover:bg-neutral-600 disabled:cursor-not-allowed disabled:opacity-40
+        flex h-8 min-w-8 cursor-pointer items-center justify-center
+        rounded-lg border border-neutral-200 bg-white px-2 shadow-sm transition
+        hover:border-amber-300 hover:text-amber-700 disabled:cursor-not-allowed disabled:opacity-40
     `
     const pageButtonClass = (isActive: boolean) => `
-        ${isActive ? 'bg-amber-500' : 'bg-neutral-600/30'}
-        flex min-h-3 min-w-7 cursor-pointer items-center justify-center
-        rounded-full p-1 shadow-sm hover:bg-neutral-600/60
+        ${isActive ? 'bg-amber-500 text-neutral-950' : 'border border-neutral-200 bg-white text-neutral-500 hover:border-amber-300 hover:text-amber-700'}
+        flex h-8 min-w-8 cursor-pointer items-center justify-center
+        rounded-lg px-2 text-[10px] font-bold shadow-sm transition
     `
 
     return (
@@ -77,7 +77,7 @@ const Pagination = ({
                     aria-label="Halaman sebelumnya"
                     className={navigationButtonClass}
                 >
-                    <span aria-hidden="true" className="text-xs text-white">‹</span>
+                    <span aria-hidden="true" className="text-sm">‹</span>
                 </button>
 
                 {groupStart > 1 && (
@@ -88,12 +88,12 @@ const Pagination = ({
                             aria-label="Halaman 1"
                             className={pageButtonClass(currentPage === 1)}
                         >
-                            <span className="text-[10px] text-white">1</span>
+                            <span>1</span>
                         </button>
 
                         <span
                             aria-hidden="true"
-                            className="flex min-h-3 min-w-7 items-center justify-center rounded-full bg-neutral-600/10 p-1 text-[10px] text-neutral-800 shadow-sm"
+                            className="flex h-8 min-w-8 items-center justify-center text-[10px] text-neutral-400"
                         >
                             …
                         </span>
@@ -109,7 +109,7 @@ const Pagination = ({
                         aria-current={currentPage === item ? 'page' : undefined}
                         className={pageButtonClass(currentPage === item)}
                     >
-                        <span className="text-[10px] text-white">{item}</span>
+                        <span>{item}</span>
                     </button>
                 ))}
 
@@ -117,7 +117,7 @@ const Pagination = ({
                     <>
                         <span
                             aria-hidden="true"
-                            className="flex min-h-3 min-w-7 items-center justify-center rounded-full bg-neutral-600/10 p-1 text-[10px] text-neutral-800 shadow-sm"
+                            className="flex h-8 min-w-8 items-center justify-center text-[10px] text-neutral-400"
                         >
                             …
                         </span>
@@ -128,7 +128,7 @@ const Pagination = ({
                             aria-label={`Halaman ${totalPages}`}
                             className={pageButtonClass(currentPage === totalPages)}
                         >
-                            <span className="text-[10px] text-white">{totalPages}</span>
+                            <span>{totalPages}</span>
                         </button>
                     </>
                 )}
@@ -140,7 +140,7 @@ const Pagination = ({
                     aria-label="Halaman berikutnya"
                     className={navigationButtonClass}
                 >
-                    <span aria-hidden="true" className="text-xs text-white">›</span>
+                    <span aria-hidden="true" className="text-sm">›</span>
                 </button>
             </div>
         </nav>

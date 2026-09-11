@@ -9,7 +9,7 @@ import InputField from "@/components/items/InputField"
 import InputFile from "@/components/items/InputFile"
 import InputRichText from "@/components/items/InputRichText"
 import { fetchApi } from "@/lib/apiFetch"
-import { useQuery, useQueryClient, useMutation } from "@tanstack/react-query"
+import { useQueryClient, useMutation } from "@tanstack/react-query"
 
 import { NewsCreateInterface } from "../types"
 import InputtextArea from "@/components/items/InputtextArea"
@@ -57,8 +57,8 @@ const Create = ({ modal, SetModal }: createProps) => {
             SetModal(false);
             emptyForm()
         },
-        onError: (err: any) => {
-            alert(`Error : ${err}`)
+        onError: (err: unknown) => {
+            alert(`Error : ${err instanceof Error ? err.message : String(err)}`)
         }
     })
 

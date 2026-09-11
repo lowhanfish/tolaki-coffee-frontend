@@ -4,6 +4,7 @@ import { useState } from 'react'
 
 import { BsFillPencilFill, BsFillTrashFill, } from "react-icons/bs";
 import { FaMagnifyingGlass, FaGear } from "react-icons/fa6";
+import { BsBoxSeam, BsBoxes, BsCurrencyDollar } from 'react-icons/bs';
 
 import Image from "next/image"
 import Button from "@/components/items/Button"
@@ -11,6 +12,7 @@ import Modal from "@/components/items/Modal"
 import Create from './components/create';
 import Pagination from '@/components/items/Pagination';
 import SelectListShow from '@/components/items/SelectListShow';
+import AdminPageHeader from '@/components/admin/AdminPageHeader';
 
 
 
@@ -34,77 +36,86 @@ const Page = () => {
 
     const [modal, SetModal] = useState<boolean>(false)
     const [modalCreate, SetModalCreate] = useState<boolean>(false)
-    const [pageShow, setPageShow] = useState<number | string>(8)
+    const [, setPageShow] = useState<number | string>(8)
 
     return (
-        <div className=''>
-            <div className='bg h-15 grid grid-cols-3 px-3 rounded-sm shadow-sm'>
-                <div className="col-span-1 flex items-center w-full">
-                    <div className="form-input">
-                        <input placeholder='Cari Data' className="input-form px-2 text-[14px]" type="text" />
-                        <button className="btn-form"
-                            onClick={() => SetModalCreate(!modalCreate)}
-                        >
-                            <p className="text-center w-full">+</p>
-                        </button>
-                    </div>
-                </div>
-            </div>
+        <main className='space-y-3 pb-3'>
+            <AdminPageHeader
+                eyebrow='Katalog'
+                title='Kelola Produk'
+                description='Atur produk kopi, harga, dan ketersediaan stok dalam satu tempat.'
+                icon={BsBoxSeam}
+                searchPlaceholder='Cari produk...'
+                onAdd={() => SetModalCreate(!modalCreate)}
+                addLabel='Tambah produk'
+            />
 
-            <div className='flex-1 mt-2'>
-                <div className="grid grid-cols-12 gap-2">
+            <section className='grid grid-cols-1 gap-3 sm:grid-cols-3'>
+                <div className='flex items-center gap-3 rounded-xl border border-neutral-100 bg-white p-4 shadow-sm'>
+                    <div className='flex h-9 w-9 items-center justify-center rounded-lg bg-amber-50 text-amber-700'><BsBoxSeam /></div>
+                    <div><p className='text-[10px] text-neutral-400'>Total produk</p><p className='text-lg font-bold text-neutral-800'>{List.length}</p></div>
+                </div>
+                <div className='flex items-center gap-3 rounded-xl border border-neutral-100 bg-white p-4 shadow-sm'>
+                    <div className='flex h-9 w-9 items-center justify-center rounded-lg bg-emerald-50 text-emerald-700'><BsBoxes /></div>
+                    <div><p className='text-[10px] text-neutral-400'>Total stok</p><p className='text-lg font-bold text-neutral-800'>{List.reduce((sum, item) => sum + item.stock, 0)} pack</p></div>
+                </div>
+                <div className='flex items-center gap-3 rounded-xl border border-neutral-100 bg-white p-4 shadow-sm'>
+                    <div className='flex h-9 w-9 items-center justify-center rounded-lg bg-sky-50 text-sky-700'><BsCurrencyDollar /></div>
+                    <div><p className='text-[10px] text-neutral-400'>Rentang harga</p><p className='text-sm font-bold text-neutral-800'>Rp85.000</p></div>
+                </div>
+            </section>
+
+            <section className='rounded-xl border border-neutral-100 bg-white p-3 shadow-sm sm:p-4'>
+                <div className='mb-4 flex items-center justify-between'>
+                    <div><h2 className='text-sm font-bold text-neutral-800'>Daftar produk</h2><p className='text-[10px] text-neutral-400'>Katalog produk yang tampil di website</p></div>
+                    <span className='rounded-full bg-emerald-50 px-2.5 py-1 text-[9px] font-bold text-emerald-700'>{List.length} aktif</span>
+                </div>
+                <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-4">
                     {
                         List.map((item, index) => (
-                            <div key={index} className='col-span-3'>
-                                <div className='relative bg-linear-to-b from-amber-800/20 to-white border-6 border-white shadow-md rounded-md'>
-                                    <div className='shadow rounded-sm'>
-
-                                        <div className='relative h-38 w-full rounded-md'>
+                            <article key={index} className='group relative overflow-hidden rounded-xl border border-neutral-100 bg-white shadow-sm transition hover:-translate-y-0.5 hover:border-amber-200 hover:shadow-md'>
+                                        <div className='relative h-42 w-full overflow-hidden bg-amber-50'>
                                             <Image
-                                                alt='Petani'
+                                                alt={item.title}
                                                 src={item.img}
                                                 fill
-                                                className='object-cover rounded-t-md'
+                                                className='object-cover transition duration-300 group-hover:scale-105'
                                                 loading="eager"
                                                 sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                                             />
                                         </div>
-                                        <div className='p-3 rounded-sm'>
-                                            <p className='text-[16px] font-bold text-black/60'>{item.title}</p>
-                                            <p className='text-[12px] pt-1'>"{item.subtitle}"</p>
-                                            <div className='mt-2'>
-                                                <p className='text-[12px] text-black/50 font-bold'>Stock : {item.stock}-{item.vol}</p>
-                                                <p className='text-[12px] text-black/50 font-bold'>Rp. {item.price}/{item.vol}</p>
+                                        <div className='p-4'>
+                                            <p className='text-sm font-bold text-neutral-800'>{item.title}</p>
+                                            <p className='mt-1 text-[10px] text-neutral-400'>{item.subtitle}</p>
+                                            <div className='mt-3 flex items-end justify-between border-t border-neutral-100 pt-3'>
+                                                <div><p className='text-[9px] uppercase tracking-wider text-neutral-400'>Harga</p><p className='text-xs font-bold text-amber-700'>Rp {item.price.toLocaleString('id-ID')}</p></div>
+                                                <span className='rounded-full bg-emerald-50 px-2 py-1 text-[9px] font-bold text-emerald-700'>{item.stock} {item.vol}</span>
                                             </div>
                                         </div>
-                                    </div>
 
                                     <button
                                         onClick={() => SetModal(!modal)}
-                                        className='absolute top-1 right-1 hover:bg-neutral-700/60 rounded-full p-1 cursor-pointer'>
-                                        <FaGear className='text-amber-400' />
+                                        aria-label={`Atur ${item.title}`}
+                                        className='absolute right-2 top-2 flex h-8 w-8 cursor-pointer items-center justify-center rounded-lg bg-neutral-950/75 text-white shadow-sm backdrop-blur-sm transition hover:bg-amber-500 hover:text-neutral-950'>
+                                        <FaGear className='text-xs' />
                                     </button>
-
-                                </div>
-                            </div>
+                            </article>
 
                         ))
                     }
                 </div>
 
-            </div>
-            <div className='grid grid-cols-12 py-5'>
-                <div className='col-span-10'>
+                <div className='mt-4 flex flex-col gap-3 border-t border-neutral-100 pt-4 sm:flex-row sm:items-center sm:justify-between'>
                     <Pagination total={999} limit={5} />
-                </div>
-                <div className='col-span-2'>
+                    <div className='w-full sm:w-40'>
                     <SelectListShow
                         onChange={(val) => {
                             setPageShow(val)
                         }}
                         size='sm' />
+                    </div>
                 </div>
-            </div>
+            </section>
 
 
 
@@ -142,7 +153,7 @@ const Page = () => {
 
 
 
-        </div>
+        </main>
     )
 }
 

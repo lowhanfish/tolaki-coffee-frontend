@@ -11,15 +11,15 @@ interface ButtonProps {
 }
 
 const colorMap: Record<string, string> = {
-    primary: 'bg-linear-to-l from-amber-300 to-amber-500',
-    warning: 'bg-linear-to-l from-orange-300 to-orange-800',
-    danger: 'bg-linear-to-l from-red-300 to-red-800',
-    success: 'bg-linear-to-l from-lime-300 to-lime-500',
+    primary: 'bg-amber-500 text-neutral-950 hover:bg-amber-400',
+    warning: 'bg-orange-500 text-white hover:bg-orange-400',
+    danger: 'bg-rose-600 text-white hover:bg-rose-500',
+    success: 'bg-emerald-600 text-white hover:bg-emerald-500',
 }
 
 const modelMap: Record<string, string> = {
     rounded: "rounded-full",
-    box: "rounded-sm ",
+    box: "rounded-lg",
 }
 
 const Button = ({ color = "primary", size = 'h-9', children, type = "box", htmlType = "button", disabled = false, onClick }: ButtonProps) => {
@@ -29,7 +29,8 @@ const Button = ({ color = "primary", size = 'h-9', children, type = "box", htmlT
             disabled={disabled}
             className={`
                 cursor-pointer disabled:cursor-not-allowed disabled:opacity-60
-                border-2 border-white shadow-sm
+                border border-transparent shadow-sm transition
+                focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-amber-500
                 ${color && colorMap[color]} ${size && size} ${type && modelMap[type]}
                 flex gap-2 justify-center items-center px-3 w-full
             `}

@@ -1,9 +1,10 @@
 "use client"
 
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import ItemList from '@/components/items/ItemList'
-import Button from '@/components/items/Button';
 import Create from './components/create';
+import AdminPageHeader from '@/components/admin/AdminPageHeader';
+import { BsBuilding, BsCheckCircle, BsQuote } from 'react-icons/bs';
 
 
 
@@ -24,48 +25,48 @@ const data = [
 ]
 
 
-const page = () => {
+const Page = () => {
 
-    const [modal, SetModal] = useState<boolean>(false)
     const [modalCreate, SetModalCreate] = useState<boolean>(false)
-
-    const saveData = () => {
-
-    }
     return (
-        <div className='bg-white shadow-sm border-5 border-neutral-300 border-double rounded-xl lg:p-5 p-2 lg:m-10'>
+        <main className='space-y-3 pb-3'>
+            <AdminPageHeader
+                eyebrow='Identitas Brand'
+                title='Profil Kopi Tolaki'
+                description='Kelola cerita, pesan, dan identitas utama yang dikenalkan kepada pengunjung.'
+                icon={BsBuilding}
+                onAdd={() => SetModalCreate(!modalCreate)}
+                addLabel='Perbarui profil'
+            />
 
-            <div className='my-5 py-2 border-y-5 border-neutral-200'>
-                <div className='w-30'>
-                    <Button
-                        color="primary"
-                        onClick={() => SetModalCreate(!modalCreate)}
-                    >
-                        <div className="flex gap-2 items-center">
-                            <p>💾</p>
-                            <p className="text-white font-bold text-[12px]">Add Data</p>
-                        </div>
-                    </Button>
+            <section className='grid grid-cols-1 gap-3 xl:grid-cols-12'>
+                <article className='overflow-hidden rounded-xl border border-neutral-100 bg-white shadow-sm xl:col-span-5'>
+                    <div className='bg-linear-to-br from-amber-50 to-white p-4'>
+                        <ItemList title='Image' type='image' image={data[0].img} />
+                    </div>
+                    <div className='border-t border-neutral-100 p-5'>
+                        <p className='text-[10px] font-semibold uppercase tracking-[0.18em] text-amber-700'>Nama brand</p>
+                        <h2 className='mt-1 text-2xl font-bold text-neutral-800'>{data[0].brand}</h2>
+                        <div className='mt-3 flex items-center gap-2 text-xs font-semibold text-emerald-700'><BsCheckCircle /><span>Profil aktif di website</span></div>
+                    </div>
+                </article>
+
+                <div className='space-y-3 xl:col-span-7'>
+                    <article className='relative overflow-hidden rounded-xl bg-amber-600 p-5 text-white shadow-sm'>
+                        <BsQuote className='absolute -right-2 -top-4 text-8xl text-white/10' />
+                        <p className='text-[10px] font-semibold uppercase tracking-[0.18em] text-amber-100'>Pesan utama</p>
+                        <p className='relative mt-3 text-xl font-bold leading-snug'>“{data[0].quotes}”</p>
+                    </article>
+                    <article className='rounded-xl border border-neutral-100 bg-white p-5 shadow-sm'>
+                        <p className='text-sm font-bold text-neutral-800'>Tentang brand</p>
+                        <p className='mt-3 text-xs leading-6 text-neutral-500'>{data[0].des}</p>
+                    </article>
+                    <article className='rounded-xl border border-neutral-100 bg-white p-5 shadow-sm'>
+                        <p className='text-sm font-bold text-neutral-800'>Cerita lengkap</p>
+                        <p className='mt-3 whitespace-pre-line text-xs leading-6 text-neutral-500'>{data[0].val}</p>
+                    </article>
                 </div>
-
-
-            </div>
-
-
-            <ItemList title='Image' type='image' image={data[0].img} />
-
-            <ItemList title='Brand'>
-                <p className='text-[18px] font-bold'>{data[0].brand}</p>
-            </ItemList>
-            <ItemList title='Quotes'>
-                <p className='text-[16px] font-bold'>{data[0].quotes}</p>
-            </ItemList>
-            <ItemList title='Description'>
-                <p className='text-[13px] font-bold'>{data[0].des}</p>
-            </ItemList>
-            <ItemList title='Detail'>
-                <p className='text-[13px]'>{data[0].val}</p>
-            </ItemList>
+            </section>
 
 
             <Create
@@ -75,8 +76,8 @@ const page = () => {
 
 
 
-        </div>
+        </main>
     )
 }
 
-export default page
+export default Page

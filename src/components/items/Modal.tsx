@@ -21,11 +21,11 @@ const sizeMap: Record<string, string> = {
 }
 
 const colorMap: Record<string, string> = {
-    primary: 'bg-linear-to-r from-amber-500 to-white',
-    warning: 'bg-linear-to-r from-orange-500 to-white',
-    danger: 'bg-linear-to-r from-red-800 to-white',
-    success: 'bg-linear-to-r from-lime-700 to-white',
-    dark: 'bg-linear-to-r from-neutral-800 to-white',
+    primary: 'bg-linear-to-r from-amber-600 to-amber-500',
+    warning: 'bg-linear-to-r from-orange-700 to-orange-500',
+    danger: 'bg-linear-to-r from-rose-800 to-rose-600',
+    success: 'bg-linear-to-r from-emerald-800 to-emerald-600',
+    dark: 'bg-linear-to-r from-neutral-900 to-neutral-700',
 }
 
 const Modal = ({ size, children, openModal, setOpenModal, color, title }: ModalProps) => {
@@ -34,19 +34,19 @@ const Modal = ({ size, children, openModal, setOpenModal, color, title }: ModalP
             {
                 openModal && (
 
-                    <div className='fixed z-2 bg-black/50 inset-0 flex flex-col justify-center items-center'>
-                        <div className={`bg shadow-md shadow-black/30 min-h-30 flex flex-col rounded-sm ${sizeMap[size]} relative overflow-scroll scrollbar-thumb-yellow-600`}>
+                    <div className='fixed inset-0 z-50 flex items-center justify-center bg-neutral-950/65 p-4 backdrop-blur-sm'>
+                        <div className={`relative flex max-h-[90vh] min-h-30 flex-col overflow-y-auto rounded-2xl bg-white shadow-2xl shadow-black/30 ${sizeMap[size]}`} role='dialog' aria-modal='true' aria-label={title || 'Dialog'}>
 
-                            <div className={`flex ${color ? colorMap[color] : ''} p-2 rounded-t-sm`}>
+                            <div className={`sticky top-0 z-10 flex items-center px-5 py-3.5 ${color ? colorMap[color] : 'bg-neutral-900'}`}>
                                 <div className='flex-1'>
-                                    <p className='text-[16px] font-bold text-white text-shadow-sm text-shadow-black/10'>{title ? title : ""}</p>
+                                    <p className='text-sm font-bold text-white'>{title ? title : ""}</p>
                                 </div>
 
-                                <button onClick={() => setOpenModal(!openModal)} className='bg-black/10 rounded-full border border-white w-6 h-6 cursor-pointer'>
-                                    ✖️
+                                <button type='button' aria-label='Tutup dialog' onClick={() => setOpenModal(!openModal)} className='flex h-7 w-7 cursor-pointer items-center justify-center rounded-full border border-white/20 bg-white/10 text-xs text-white transition hover:bg-white/20'>
+                                    ✕
                                 </button>
                             </div>
-                            <div className='px-3'>
+                            <div>
                                 {children}
                             </div>
                         </div>

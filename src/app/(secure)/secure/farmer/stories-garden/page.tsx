@@ -3,8 +3,7 @@
 import { useState } from 'react'
 
 import { BsFillPencilFill, BsFillTrashFill } from "react-icons/bs";
-import { GiPlantRoots, GiMountainRoad } from "react-icons/gi";
-import { FaPeopleRoof, FaGear } from "react-icons/fa6";
+import { FaGear } from "react-icons/fa6";
 import { FaMagnifyingGlass } from "react-icons/fa6";
 
 import Image from "next/image"
@@ -13,12 +12,8 @@ import Modal from "@/components/items/Modal"
 import Create from './components/create';
 import Pagination from '@/components/items/Pagination';
 import SelectListShow from '@/components/items/SelectListShow';
-
-
-
-const List = [
-    { id: 3, title: "Arabica Coffee", subtitle: "Medium Roast", stock: 12, price: 85000, vol: "200gr", img: "/images/kopi3.png" },
-]
+import AdminPageHeader from '@/components/admin/AdminPageHeader';
+import { BsChatQuote } from 'react-icons/bs';
 
 
 const Page = () => {
@@ -30,71 +25,48 @@ const Page = () => {
 
     const [modal, SetModal] = useState<boolean>(false)
     const [modalCreate, SetModalCreate] = useState<boolean>(false)
-    const [pageShow, setPageShow] = useState<number | string>(8)
+    const [, setPageShow] = useState<number | string>(8)
 
     return (
-        <div className=''>
-            <div className='bg h-15 grid grid-cols-3 px-3 rounded-sm shadow-sm'>
-                <div className="col-span-1 flex items-center w-full">
-                    <div className="form-input">
-                        <input placeholder='Cari Data' className="input-form px-2 text-[14px]" type="text" />
-                        <button className="btn-form"
-                            onClick={() => SetModalCreate(!modalCreate)}
-                        >
-                            <p className="text-center w-full">+</p>
-                        </button>
-                    </div>
-                </div>
-            </div>
+        <main className='space-y-3 pb-3'>
+            <AdminPageHeader eyebrow='Petani & Kemitraan' title='Cerita dari Kebun' description='Kelola profil dan kisah inspiratif para petani mitra Kopi Tolaki.' icon={BsChatQuote} searchPlaceholder='Cari cerita petani...' onAdd={() => SetModalCreate(!modalCreate)} addLabel='Tambah cerita' />
 
-            <hr className='h-2 bg-neutral-200 mt-2 border-none' />
-
-            <div className='flex-1 mt-2'>
-                <div className="grid grid-cols-12 gap-2">
+            <section className='rounded-xl border border-neutral-100 bg-white p-3 shadow-sm sm:p-4'>
+                <div className='mb-4 flex items-center justify-between'><div><h2 className='text-sm font-bold text-neutral-800'>Cerita petani</h2><p className='text-[10px] text-neutral-400'>Wajah dan suara dari kebun kopi</p></div><span className='rounded-full bg-amber-50 px-2.5 py-1 text-[9px] font-bold text-amber-700'>8 cerita</span></div>
+                <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-4">
                     {
-                        [...Array(8)].map((item, index) => (
-                            <div key={index} className='col-span-3'>
-                                <div className='relative bg-linear-to-b from-amber-800/20 to-white border-6 border-white shadow-md rounded-md'>
-                                    <div className='relative h-38 w-full rounded-md'>
+                        [...Array(8)].map((_, index) => (
+                                <article key={index} className='group relative overflow-hidden rounded-xl border border-neutral-100 bg-white shadow-sm transition hover:-translate-y-0.5 hover:border-amber-200 hover:shadow-md'>
+                                    <div className='relative h-44 w-full overflow-hidden bg-neutral-100'>
                                         <Image
                                             alt='Petani'
                                             src={`/images/petani1.png`}
                                             fill
-                                            className='object-cover rounded-t-md'
+                                            className='object-cover transition duration-300 group-hover:scale-105'
                                             loading="eager"
                                             sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                                         />
                                     </div>
-                                    <div className='p-3'>
-                                        <p className='text-[16px] font-bold text-black/60'>Pak Maryan</p>
-                                        <p className='text-[12px] pt-1'>"Kemangi-aroma wangi dari kebun kami adalah hasil dari kesabaran merawat bumi."</p>
-                                        <div className='mt-2'>
-                                            <p className='text-[12px] text-black/50 font-bold'>Konawe Selatan</p>
-                                        </div>
+                                    <div className='p-4'>
+                                        <p className='text-sm font-bold text-neutral-800'>Pak Maryan</p>
+                                        <p className='mt-2 line-clamp-3 text-[10px] italic leading-5 text-neutral-500'>“Kemangi—aroma wangi dari kebun kami adalah hasil dari kesabaran merawat bumi.”</p>
+                                        <p className='mt-3 border-t border-neutral-100 pt-3 text-[9px] font-bold uppercase tracking-wider text-amber-700'>Konawe Selatan</p>
                                     </div>
 
                                     <button
                                         onClick={() => SetModal(!modal)}
-                                        className='absolute top-1 right-1 hover:bg-neutral-700/60 rounded-full p-1 cursor-pointer'>
-                                        <FaGear className='text-amber-400' />
+                                        aria-label='Atur cerita petani'
+                                        className='absolute right-2 top-2 flex h-8 w-8 cursor-pointer items-center justify-center rounded-lg bg-neutral-950/75 text-white shadow-sm backdrop-blur-sm transition hover:bg-amber-500 hover:text-neutral-950'>
+                                        <FaGear className='text-xs' />
                                     </button>
-
-                                </div>
-                            </div>
+                                </article>
                         ))
                     }
                 </div>
 
-            </div>
-            <div>
-
-                <hr className='h-2 bg-neutral-200 mt-3 border-none' />
-
-                <div className='grid grid-cols-12 py-5'>
-                    <div className='col-span-10'>
+                <div className='mt-4 flex flex-col gap-3 border-t border-neutral-100 pt-4 sm:flex-row sm:items-center sm:justify-between'>
                         <Pagination total={999} limit={5} />
-                    </div>
-                    <div className='col-span-2'>
+                    <div className='w-full sm:w-40'>
                         <SelectListShow
                             onChange={(val) => {
                                 setPageShow(val)
@@ -102,7 +74,7 @@ const Page = () => {
                             size='sm' />
                     </div>
                 </div>
-            </div>
+            </section>
 
 
 
@@ -140,7 +112,7 @@ const Page = () => {
 
 
 
-        </div>
+        </main>
     )
 }
 

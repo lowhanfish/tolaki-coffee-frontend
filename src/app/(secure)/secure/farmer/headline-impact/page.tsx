@@ -7,21 +7,13 @@ import { GiPlantRoots, GiMountainRoad } from "react-icons/gi";
 import { FaPeopleRoof, FaGear } from "react-icons/fa6";
 import { FaMagnifyingGlass } from "react-icons/fa6";
 
-import Image from "next/image"
 import Button from "@/components/items/Button"
 import Modal from "@/components/items/Modal"
 import Create from './components/create';
 import Pagination from '@/components/items/Pagination';
 import SelectListShow from '@/components/items/SelectListShow';
-
-
-
-
-
-
-const List = [
-    { id: 3, title: "Arabica Coffee", subtitle: "Medium Roast", stock: 12, price: 85000, vol: "200gr", img: "/images/kopi3.png" },
-]
+import AdminPageHeader from '@/components/admin/AdminPageHeader';
+import { BsGeoAlt } from 'react-icons/bs';
 
 
 const Page = () => {
@@ -33,68 +25,48 @@ const Page = () => {
 
     const [modal, SetModal] = useState<boolean>(false)
     const [modalCreate, SetModalCreate] = useState<boolean>(false)
-    const [pageShow, setPageShow] = useState<number | string>(8)
+    const [, setPageShow] = useState<number | string>(8)
 
     return (
-        <div className=''>
-            <div className='bg h-15 grid grid-cols-3 px-3 rounded-sm shadow-sm'>
-                <div className="col-span-1 flex items-center w-full">
-                    <div className="form-input">
-                        <input placeholder='Cari Data' className="input-form px-2 text-[14px]" type="text" />
-                        <button className="btn-form"
-                            onClick={() => SetModalCreate(!modalCreate)}
-                        >
-                            <p className="text-center w-full">+</p>
-                        </button>
-                    </div>
-                </div>
-            </div>
+        <main className='space-y-3 pb-3'>
+            <AdminPageHeader eyebrow='Petani & Kemitraan' title='Headline & Dampak' description='Kelola wilayah kemitraan dan ringkasan dampak Kopi Tolaki bagi petani.' icon={FaPeopleRoof} searchPlaceholder='Cari wilayah...' onAdd={() => SetModalCreate(!modalCreate)} addLabel='Tambah wilayah' />
 
-            <hr className='h-2 bg-neutral-200 mt-2 border-none' />
-
-            <div className='flex-1 mt-2'>
-                <div className="grid grid-cols-12 gap-2">
+            <section className='rounded-xl border border-neutral-100 bg-white p-3 shadow-sm sm:p-4'>
+                <div className='mb-4 flex items-center justify-between'><div><h2 className='text-sm font-bold text-neutral-800'>Wilayah binaan</h2><p className='text-[10px] text-neutral-400'>Ringkasan dampak pada setiap wilayah</p></div><span className='rounded-full bg-emerald-50 px-2.5 py-1 text-[9px] font-bold text-emerald-700'>8 wilayah</span></div>
+                <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-4">
                     {
-                        [...Array(8)].map((item, index) => (
-                            <div key={index} className='col-span-3'>
-                                <div className='relative border-5 border-white shadow-sm rounded-md px-3 py-2 bg-linear-to-r from-white to-black/10'>
-                                    <p className='text-[15px] text-neutral-600 font-bold'>Konawe Selatan</p>
-                                    <div>
+                        [...Array(8)].map((_, index) => (
+                                <article key={index} className='relative overflow-hidden rounded-xl border border-neutral-100 bg-linear-to-br from-white to-amber-50/60 p-4 shadow-sm transition hover:-translate-y-0.5 hover:border-amber-200 hover:shadow-md'>
+                                    <div className='mb-4 flex h-9 w-9 items-center justify-center rounded-lg bg-amber-100 text-amber-700'><BsGeoAlt /></div>
+                                    <p className='text-sm font-bold text-neutral-800'>Konawe Selatan</p>
+                                    <div className='mt-3 space-y-2 border-t border-neutral-100 pt-3'>
                                         <div className='flex items-center gap-3'>
-                                            <FaPeopleRoof className='text-amber-800 text-[20px]' />
-                                            <p className='text-[12px] text-amber-700'><span className='font-bold text-[13px] text-neutral-500'>120</span> Petani</p>
+                                            <FaPeopleRoof className='text-base text-amber-700' />
+                                            <p className='text-[10px] text-neutral-500'><span className='text-xs font-bold text-neutral-700'>120</span> Petani</p>
                                         </div>
                                         <div className='flex items-center gap-3'>
-                                            <GiPlantRoots className='text-green-600 text-[20px]' />
-                                            <p className='text-[12px] text-amber-700'><span className='font-bold text-[13px] text-neutral-500'>55</span> Ha</p>
+                                            <GiPlantRoots className='text-base text-emerald-600' />
+                                            <p className='text-[10px] text-neutral-500'><span className='text-xs font-bold text-neutral-700'>55</span> Hektare</p>
                                         </div>
                                         <div className='flex items-center gap-3'>
-                                            <GiMountainRoad className='text-blue-300 text-[20px]' />
-                                            <p className='text-[12px] text-amber-700'><span className='font-bold text-[13px] text-neutral-500'>500-1000</span> Mdpl</p>
+                                            <GiMountainRoad className='text-base text-sky-600' />
+                                            <p className='text-[10px] text-neutral-500'><span className='text-xs font-bold text-neutral-700'>500–1000</span> Mdpl</p>
                                         </div>
                                     </div>
                                     <button
                                         onClick={() => SetModal(!modal)}
-                                        className='absolute top-2 right-2 hover:bg-neutral-700/10 rounded-full p-1 cursor-pointer'>
-                                        <FaGear className='text-amber-600' />
+                                        aria-label='Atur wilayah'
+                                        className='absolute right-3 top-3 flex h-8 w-8 cursor-pointer items-center justify-center rounded-lg bg-white text-neutral-400 shadow-sm ring-1 ring-neutral-100 transition hover:bg-amber-500 hover:text-neutral-950'>
+                                        <FaGear className='text-xs' />
                                     </button>
-                                </div>
-
-                            </div>
+                                </article>
                         ))
                     }
                 </div>
 
-            </div>
-            <div>
-
-                <hr className='h-2 bg-neutral-200 mt-3 border-none' />
-
-                <div className='grid grid-cols-12 py-5'>
-                    <div className='col-span-10'>
+                <div className='mt-4 flex flex-col gap-3 border-t border-neutral-100 pt-4 sm:flex-row sm:items-center sm:justify-between'>
                         <Pagination total={999} limit={5} />
-                    </div>
-                    <div className='col-span-2'>
+                    <div className='w-full sm:w-40'>
                         <SelectListShow
                             onChange={(val) => {
                                 setPageShow(val)
@@ -102,7 +74,7 @@ const Page = () => {
                             size='sm' />
                     </div>
                 </div>
-            </div>
+            </section>
 
 
 
@@ -140,7 +112,7 @@ const Page = () => {
 
 
 
-        </div>
+        </main>
     )
 }
 

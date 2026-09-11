@@ -1,8 +1,8 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 
-import { BsFillPencilFill, BsFillTrashFill, } from "react-icons/bs";
+import { BsCalendar3, BsFillPencilFill, BsFillTrashFill, BsNewspaper, BsPerson } from "react-icons/bs";
 import { FaMagnifyingGlass, FaGear } from "react-icons/fa6";
 
 import Image from "next/image"
@@ -15,21 +15,7 @@ import { useDataStore } from '@/stores/dataStore';
 import { useQuery } from '@tanstack/react-query';
 import { fetchApi } from '@/lib/apiFetch';
 import { NewsResponseListInterface } from "./types"
-
-
-
-
-
-const List = [
-    { id: 3, title: "Arabica Coffee adalah loremp insump kkashdkf kahsdjf asdjkf akjsdf", subtitle: "Medium Roast (200gr)", stock: 12, price: 85000, vol: "Pack", img: "/images/about.png" },
-    { id: 1, title: "Tubruk Robusta", subtitle: "Medium Roast (200gr)", stock: 12, price: 85000, vol: "Pack", img: "/images/about.png" },
-    { id: 4, title: "Kopi Tolaki", subtitle: "Medium Roast (200gr)", stock: 12, price: 85000, vol: "Pack", img: "/images/about.png" },
-    { id: 2, title: "Tolaki Robusta", subtitle: "Medium Roast (200gr)", stock: 12, price: 85000, vol: "Pack", img: "/images/about.png" },
-    { id: 3, title: "Arabica Coffee", subtitle: "Medium Roast (200gr)", stock: 12, price: 85000, vol: "Pack", img: "/images/about.png" },
-    { id: 1, title: "Tubruk Robusta", subtitle: "Medium Roast (200gr)", stock: 12, price: 85000, vol: "Pack", img: "/images/about.png" },
-    { id: 4, title: "Kopi Tolaki", subtitle: "Medium Roast (200gr)", stock: 12, price: 85000, vol: "Pack", img: "/images/about.png" },
-    { id: 2, title: "Tolaki Robusta", subtitle: "Medium Roast (200gr)", stock: 12, price: 85000, vol: "Pack", img: "/images/about.png" },
-]
+import AdminPageHeader from '@/components/admin/AdminPageHeader';
 
 
 const Page = () => {
@@ -44,88 +30,79 @@ const Page = () => {
     const [modalCreate, SetModalCreate] = useState<boolean>(false)
 
 
-    const [pageShow, setPageShow] = useState<number>(5)
+    const pageShow = 5
     const [limit, setLimit] = useState<number>(8)
-    const [total, setTotal] = useState<number>(100)
     const [skip, setSkip] = useState<number>(1)
-    const [search, setSearch] = useState<string>("")
+    const search = ""
 
     const { data: Data, isLoading } = useQuery({
         queryFn: () => fetchApi<NewsResponseListInterface>(`${url}/news/read?search=${encodeURIComponent(search)}&skip=${(skip - 1)}&limit=${limit}`),
         queryKey: ["product-admin", skip, limit]
     })
 
-    useEffect(() => {
-        if (Data) {
-            console.log("Telaso")
-            console.log(Data)
-            setTotal(Data.total)
-        }
-    }, [Data])
+    const total = Data?.total ?? 0
 
     return (
-        <div className=''>
-            <div className='bg h-15 grid grid-cols-3 px-3 shadow-sm rounbde-lg'>
-                <div className="col-span-1 flex items-center w-full">
-                    <div className="form-input">
-                        <input placeholder='Cari Data' className="input-form px-2 text-[14px]" type="text" />
-                        <button className="btn-form"
-                            onClick={() => SetModalCreate(!modalCreate)}
-                        >
-                            <p className="text-center w-full">+</p>
-                        </button>
-                    </div>
-                </div>
-            </div>
+        <main className='space-y-3 pb-3'>
+            <AdminPageHeader
+                eyebrow='Publikasi'
+                title='Berita & Artikel'
+                description='Kelola informasi, kabar petani, dan cerita terbaru dari Kopi Tolaki.'
+                icon={BsNewspaper}
+                searchPlaceholder='Cari berita...'
+                onAdd={() => SetModalCreate(!modalCreate)}
+                addLabel='Tulis berita'
+            />
 
-            <div className='flex-1 mt-2'>
-                <div className="grid grid-cols-12 gap-2">
+            <section className='rounded-xl border border-neutral-100 bg-white p-3 shadow-sm sm:p-4'>
+                <div className='mb-4 flex items-center justify-between'>
+                    <div><h2 className='text-sm font-bold text-neutral-800'>Semua publikasi</h2><p className='text-[10px] text-neutral-400'>Artikel yang telah ditambahkan ke website</p></div>
+                    <span className='rounded-full bg-amber-50 px-2.5 py-1 text-[9px] font-bold text-amber-700'>{total} artikel</span>
+                </div>
+
+                {isLoading ? (
+                    <div className='grid grid-cols-1 gap-3 xl:grid-cols-2'>
+                        {[...Array(4)].map((_, index) => <div key={index} className='h-32 animate-pulse rounded-xl bg-neutral-100' />)}
+                    </div>
+                ) : (
+                <div className="grid grid-cols-1 gap-3 xl:grid-cols-2">
                     {
                         Data?.data.map((item, index) => (
-                            <div key={index} className='col-span-6'>
-                                <div className='relative h-full border-7 border-white rounded-xl shadow-sm'>
-                                    <div className='shadow-sm h-full rounded-lg flex '>
-
-                                        <div className='relative w-30 h-full rounded-md'>
+                            <article key={index} className='group relative flex min-h-32 overflow-hidden rounded-xl border border-neutral-100 bg-white shadow-sm transition hover:border-amber-200 hover:shadow-md'>
+                                        <div className='relative w-32 shrink-0 overflow-hidden bg-neutral-100 sm:w-40'>
                                             <Image
-                                                className='object-cover rounded-l-md'
-                                                alt='Petani'
+                                                className='object-cover transition duration-300 group-hover:scale-105'
+                                                alt={item.title}
                                                 src={`${url}/uploads/news/${item.file}`}
                                                 fill
                                                 loading="eager"
                                                 sizes='100vw, 50vw, 25vw'
                                             />
                                         </div>
-                                        <div className='flex-1 p-3 rounded-sm'>
-                                            <p className='text-[16px] font-bold text-black/60 line-clamp-1'>{item.title}</p>
+                                        <div className='min-w-0 flex-1 p-4 pr-11'>
+                                            <span className='rounded-full bg-amber-50 px-2 py-1 text-[8px] font-bold uppercase tracking-wider text-amber-700'>Berita</span>
+                                            <p className='mt-2 line-clamp-2 text-sm font-bold leading-snug text-neutral-800'>{item.title}</p>
 
-                                            <div className='flex gap-2 items-center pt-2'>
-                                                <i className="bi bi-clock text-[11px] text-neutral-600"></i>
-                                                <p className='text-[12px] text-neutral-500'>20 Nov 2026</p>
-                                            </div>
-                                            <div className='flex gap-2 items-center'>
-                                                <i className="bi bi-person-circle text-[11px] text-neutral-600"></i>
-                                                <p className='text-[12px] text-neutral-500'>Kiken SB</p>
+                                            <div className='mt-3 flex flex-wrap gap-x-4 gap-y-1 border-t border-neutral-100 pt-3'>
+                                                <div className='flex items-center gap-1.5 text-[10px] text-neutral-400'><BsCalendar3 /><span>20 Nov 2026</span></div>
+                                                <div className='flex items-center gap-1.5 text-[10px] text-neutral-400'><BsPerson /><span>Kiken SB</span></div>
                                             </div>
                                         </div>
-                                    </div>
 
                                     <button
                                         onClick={() => SetModal(!modal)}
-                                        className='absolute top-1 right-1 hover:bg-neutral-700/60 rounded-full p-1 cursor-pointer'>
-                                        <FaGear className='text-amber-400' />
+                                        aria-label={`Atur ${item.title}`}
+                                        className='absolute right-3 top-3 flex h-8 w-8 cursor-pointer items-center justify-center rounded-lg bg-neutral-100 text-neutral-500 transition hover:bg-amber-500 hover:text-neutral-950'>
+                                        <FaGear className='text-xs' />
                                     </button>
-
-                                </div>
-                            </div>
+                            </article>
 
                         ))
                     }
                 </div>
+                )}
 
-            </div>
-            <div className='grid grid-cols-12 py-5'>
-                <div className='col-span-10'>
+                <div className='mt-4 flex flex-col gap-3 border-t border-neutral-100 pt-4 sm:flex-row sm:items-center sm:justify-between'>
                     <Pagination
                         total={total}
                         limit={Number(limit)}
@@ -133,16 +110,16 @@ const Page = () => {
                         page={skip}
                         onPageChange={setSkip}
                     />
-                </div>
-                <div className='col-span-2'>
+                    <div className='w-full sm:w-40'>
                     <SelectListShow
                         onChange={(val) => {
                             setLimit(val as number)
                             setSkip(1)
                         }}
                         size='sm' />
+                    </div>
                 </div>
-            </div>
+            </section>
 
 
 
@@ -180,7 +157,7 @@ const Page = () => {
 
 
 
-        </div>
+        </main>
     )
 }
 

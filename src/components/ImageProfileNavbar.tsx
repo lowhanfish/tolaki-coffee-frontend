@@ -27,8 +27,8 @@ const ImageProfileNavbar = () => {
             {
                 isLogin == "authenticated" ? (
                     <>
-                        <div className='flex gap-1 items-center h-full '>
-                            <div onClick={() => setIsShowDropDown(!isShowDropDown)} className='h-10 w-10 rounded-full border border-white/50 relative overflow-hidden cursor-pointer'>
+                        <div className='flex h-full items-center gap-2'>
+                            <button onClick={() => setIsShowDropDown(!isShowDropDown)} className='relative h-9 w-9 cursor-pointer overflow-hidden rounded-full border-2 border-white shadow-sm ring-1 ring-neutral-200'>
 
                                 <Image
                                     alt='Profile Image'
@@ -43,29 +43,32 @@ const ImageProfileNavbar = () => {
                                         event.currentTarget.src = fallbackAvatarUrl
                                     }}
                                 />
+                            </button>
+                            <div className='hidden text-left sm:block'>
+                                <p className='text-[11px] font-bold text-neutral-700'>{profile?.name || 'Administrator'}</p>
+                                <p className='text-[9px] text-neutral-400'>Pengelola konten</p>
                             </div>
-                            <p className='text-[12px] text-white'>{profile?.name}</p>
                         </div>
                         {
                             isShowDropDown && (
 
                                 <div className='relative w-full'>
-                                    <div className='absolute'>
-                                        <ul className='bg-white rounded-2xl font-semibold py-2 px-4 text-neutral-600 text-[12px]'>
+                                    <div className='absolute right-0 top-2 z-30 w-44'>
+                                        <ul className='rounded-xl border border-neutral-100 bg-white p-2 text-[11px] font-semibold text-neutral-600 shadow-xl'>
                                             <li className='cursor-pointer'>
-                                                <div className='flex items-center gap-2 py-1.5'>
+                                                <div className='flex items-center gap-2 rounded-lg px-2 py-2 hover:bg-neutral-50'>
                                                     <BsFillPersonFill />
                                                     <p>Profile</p>
                                                 </div>
                                             </li>
                                             <li className='cursor-pointer'>
-                                                <div className='flex items-center gap-2 py-1.5'>
+                                                <div className='flex items-center gap-2 rounded-lg px-2 py-2 hover:bg-neutral-50'>
                                                     <BsFillGearFill />
                                                     <p>Settings</p>
                                                 </div>
                                             </li>
                                             <li className='cursor-pointer'>
-                                                <div onClick={() => logOut.mutate()} className='flex items-center gap-2 py-1.5'>
+                                                <div onClick={() => logOut.mutate()} className='flex items-center gap-2 rounded-lg px-2 py-2 text-rose-600 hover:bg-rose-50'>
                                                     <BsLockFill />
                                                     <p>Logout</p>
                                                 </div>
