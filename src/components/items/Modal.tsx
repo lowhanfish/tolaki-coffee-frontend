@@ -35,7 +35,7 @@ const Modal = ({ size, children, openModal, setOpenModal, color, title }: ModalP
                 openModal && (
 
                     <div className='fixed inset-0 z-50 flex items-center justify-center bg-neutral-950/65 p-4 backdrop-blur-sm'>
-                        <div className={`relative flex max-h-[90vh] min-h-30 flex-col overflow-y-auto rounded-2xl bg-white shadow-2xl shadow-black/30 ${sizeMap[size]}`} role='dialog' aria-modal='true' aria-label={title || 'Dialog'}>
+                        <div className={`relative flex max-h-[90vh] min-h-30 flex-col overflow-y-auto rounded-2xl bg-white/95 shadow-2xl shadow-black/30 ${sizeMap[size]}`} role='dialog' aria-modal='true' aria-label={title || 'Dialog'}>
 
                             <div className={`sticky top-0 z-10 flex items-center px-5 py-3.5 ${color ? colorMap[color] : 'bg-neutral-900'}`}>
                                 <div className='flex-1'>
@@ -46,7 +46,7 @@ const Modal = ({ size, children, openModal, setOpenModal, color, title }: ModalP
                                     ✕
                                 </button>
                             </div>
-                            <div>
+                            <div className='px-2 pb-2 pt-1 sm:px-3 sm:pb-3'>
                                 {children}
                             </div>
                         </div>

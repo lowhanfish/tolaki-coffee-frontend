@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, Dispatch, SetStateAction } from "react"
+import { Dispatch, SetStateAction } from "react"
 
 
 import Modal from '@/components/items/Modal'
@@ -15,41 +15,38 @@ import { NewsCreateInterface } from "../types"
 import InputtextArea from "@/components/items/InputtextArea"
 import { useDataStore } from "@/stores/dataStore"
 
-
-
 interface createProps {
     modal: boolean,
-    SetModal: Dispatch<SetStateAction<boolean>>
+    SetModal: Dispatch<SetStateAction<boolean>>,
+    form: NewsCreateInterface,
+    setForm: Dispatch<SetStateAction<NewsCreateInterface>>,
+    emptyForm: () => void,
+    isUpdate: boolean
 }
 
-const Create = ({ modal, SetModal }: createProps) => {
+const Create = ({ modal, SetModal, form, setForm, emptyForm, isUpdate }: createProps) => {
 
     const querClient = useQueryClient()
     const url = useDataStore(state => state.url)
 
-    const [form, setForm] = useState<NewsCreateInterface>({
-        id: "",
-        title: "",
-        description: "",
-        news: "",
-        source: "",
-        file: null,
-    })
-
-    const emptyForm = () => {
-        setForm({
-            id: "",
-            title: "",
-            description: "",
-            news: "",
-            source: "",
-            file: null,
-        })
-    }
-
     const setDataMutation = useMutation({
         mutationFn: (formData: FormData) => fetchApi(`${url}/news/create`, {
             method: "POST",
+            body: formData
+        }),
+        onSuccess: () => {
+            querClient.invalidateQueries({ queryKey: ["product-admin"] })
+            SetModal(false);
+            emptyForm()
+        },
+        onError: (err: unknown) => {
+            alert(`Error : ${err instanceof Error ? err.message : String(err)}`)
+        }
+    })
+
+    const editDataMutation = useMutation({
+        mutationFn: ({ formData, id }: { formData: FormData, id: string }) => fetchApi(`${url}/news/update/${id}`, {
+            method: "PATCH",
             body: formData
         }),
         onSuccess: () => {
@@ -73,18 +70,13 @@ const Create = ({ modal, SetModal }: createProps) => {
             formData.append("file", form.file)
         }
 
+        if (isUpdate) {
+            editDataMutation.mutate({ formData: formData, id: form.id as string })
+        } else {
+            setDataMutation.mutate(formData)
+        }
 
-        setDataMutation.mutate(formData)
     }
-
-
-
-    // const SetObjForm = (data: string | number | File | null, key: keyof NewsCreateInterface) => {
-    //     setForm({
-    //         ...form,
-    //         [key]: data
-    //     })
-    // }
 
     const SetObjForm = <K extends keyof NewsCreateInterface>(value: NewsCreateInterface[K], key: K) => {
         setForm((prev) => ({
@@ -151,7 +143,10 @@ const Create = ({ modal, SetModal }: createProps) => {
 
                     <Button
                         color="danger"
-                        onClick={() => SetModal(!modal)}
+                        onClick={() => {
+                            emptyForm()
+                            SetModal(!modal)
+                        }}
                     >
                         <div className="flex gap-2 items-center">
                             <p>🚫</p>

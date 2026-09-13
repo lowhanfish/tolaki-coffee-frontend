@@ -5,7 +5,7 @@ import Image from 'next/image'
 
 import useLogout from '@/hooks/useLogout';
 import { usePathname } from 'next/navigation';
-import { BsBoxArrowLeft, BsChevronRight } from 'react-icons/bs';
+import { BsBoxArrowLeft, BsChevronRight, BsX } from 'react-icons/bs';
 
 const Menu = [
     {
@@ -81,11 +81,19 @@ const Menu = [
     },
 ]
 
-const AdminSidebar = () => {
+interface AdminSidebarProps {
+    isOpen: boolean
+    onClose: () => void
+}
+
+const AdminSidebar = ({ isOpen, onClose }: AdminSidebarProps) => {
     const logout = useLogout()
 
     return (
-        <aside className='flex h-full w-64 shrink-0 flex-col border-r border-white/10 bg-neutral-950 text-white shadow-xl'>
+        <aside
+            aria-label='Menu samping admin'
+            className={`fixed inset-y-0 left-0 z-40 flex h-full w-64 shrink-0 flex-col border-r border-white/10 bg-neutral-950 text-white shadow-xl transition-transform duration-300 ease-out lg:static lg:z-auto lg:translate-x-0 ${isOpen ? 'translate-x-0' : '-translate-x-full'}`}
+        >
             <div className='relative'>
                 <Image
                     alt='Kopi Tolaki'
@@ -100,17 +108,25 @@ const AdminSidebar = () => {
                     <p className='text-[9px] font-semibold uppercase tracking-[0.2em] text-amber-400'>Kopi Tolaki</p>
                     <p className='mt-0.5 text-sm font-bold text-white'>Administrator</p>
                 </div>
+                <button
+                    type='button'
+                    onClick={onClose}
+                    aria-label='Tutup menu navigasi'
+                    className='absolute right-3 top-3 flex h-8 w-8 cursor-pointer items-center justify-center rounded-lg border border-white/10 bg-neutral-950/55 text-xl text-white backdrop-blur-sm transition hover:bg-amber-500 hover:text-neutral-950 lg:hidden'
+                >
+                    <BsX />
+                </button>
             </div>
             <nav className='flex-1 overflow-y-auto px-3 py-4' aria-label='Navigasi admin'>
                 {
                     Menu.map((item) => (
-                        <SideBarItem key={item.id} item={item} />
+                        <SideBarItem key={item.id} item={item} onNavigate={onClose} />
                     ))
                 }
 
             </nav>
             <div className='border-t border-white/8 p-3'>
-                <button onClick={() => logout.mutate()} className='flex w-full cursor-pointer items-center gap-3 rounded-lg px-3 py-2.5 text-left text-xs font-semibold text-neutral-400 transition hover:bg-rose-500/10 hover:text-rose-300'>
+                <button onClick={() => { onClose(); logout.mutate() }} className='flex w-full cursor-pointer items-center gap-3 rounded-lg px-3 py-2.5 text-left text-xs font-semibold text-neutral-400 transition hover:bg-rose-500/10 hover:text-rose-300'>
                     <BsBoxArrowLeft className='text-base' />
                     <span>Keluar</span>
                 </button>
@@ -131,10 +147,11 @@ interface MenuItem {
 interface ItemProps {
     item: MenuItem,
     level?: number;
+    onNavigate: () => void
 }
 
 
-const SideBarItem = ({ item, level = 1 }: ItemProps) => {
+const SideBarItem = ({ item, level = 1, onNavigate }: ItemProps) => {
 
     const pathname = usePathname()
     const isChildActive = item.children.some((child) => pathname === child.path)
@@ -165,7 +182,7 @@ const SideBarItem = ({ item, level = 1 }: ItemProps) => {
                                 <Fragment key={item.id}>
                                     {
                                         isShow && (
-                                            <SideBarItem item={item} level={level + 1} />
+                                            <SideBarItem item={item} level={level + 1} onNavigate={onNavigate} />
                                         )
                                     }
                                 </Fragment>
@@ -174,7 +191,7 @@ const SideBarItem = ({ item, level = 1 }: ItemProps) => {
                     </Fragment>
                 ) : (
                     <>
-                        <Link className='block' href={item.path}>
+                        <Link className='block' href={item.path} onClick={onNavigate}>
                             <button
                                 className={`flex w-full cursor-pointer items-center gap-3 rounded-lg py-2.5 pr-3 text-left text-xs transition ${level > 1 ? 'pl-13' : 'pl-3'} ${isActive ? 'bg-amber-500 font-bold text-neutral-950 shadow-sm shadow-amber-950/20' : 'font-semibold text-neutral-400 hover:bg-white/5 hover:text-white'}`}
                             >

@@ -11,6 +11,7 @@ interface AdminPageHeaderProps {
     searchPlaceholder?: string
     onAdd?: () => void
     addLabel?: string
+    actionIcon?: IconType
 }
 
 const AdminPageHeader = ({
@@ -21,6 +22,7 @@ const AdminPageHeader = ({
     searchPlaceholder,
     onAdd,
     addLabel = 'Tambah data',
+    actionIcon: ActionIcon = BsPlusLg,
 }: AdminPageHeaderProps) => {
     return (
         <section className='relative overflow-hidden rounded-xl bg-linear-to-r from-neutral-900 via-neutral-800 to-amber-900 px-5 py-5 text-white shadow-sm'>
@@ -58,7 +60,7 @@ const AdminPageHeader = ({
                                 onClick={onAdd}
                                 className='flex h-10 shrink-0 cursor-pointer items-center justify-center gap-2 rounded-lg bg-amber-500 px-4 text-xs font-bold text-neutral-900 shadow-sm transition hover:bg-amber-400 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-amber-300'
                             >
-                                <BsPlusLg />
+                                <ActionIcon />
                                 {addLabel}
                             </button>
                         )}
