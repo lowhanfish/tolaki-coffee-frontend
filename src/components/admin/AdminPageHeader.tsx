@@ -12,6 +12,8 @@ interface AdminPageHeaderProps {
     onAdd?: () => void
     addLabel?: string
     actionIcon?: IconType
+    search?: string
+    setInputSearch?: (value: string) => void,
 }
 
 const AdminPageHeader = ({
@@ -23,6 +25,8 @@ const AdminPageHeader = ({
     onAdd,
     addLabel = 'Tambah data',
     actionIcon: ActionIcon = BsPlusLg,
+    search = "",
+    setInputSearch,
 }: AdminPageHeaderProps) => {
     return (
         <section className='relative overflow-hidden rounded-xl bg-linear-to-r from-neutral-900 via-neutral-800 to-amber-900 px-5 py-5 text-white shadow-sm'>
@@ -51,6 +55,12 @@ const AdminPageHeader = ({
                                     placeholder={searchPlaceholder}
                                     aria-label={searchPlaceholder}
                                     className='w-full bg-transparent text-xs text-white outline-none placeholder:text-white/40'
+                                    value={search}
+                                    onChange={(e) => {
+                                        if (setInputSearch) {
+                                            setInputSearch(e.target.value)
+                                        }
+                                    }}
                                 />
                             </label>
                         )}

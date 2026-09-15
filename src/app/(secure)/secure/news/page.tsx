@@ -17,6 +17,8 @@ import { fetchApi } from '@/lib/apiFetch';
 import { NewsResponseListInterface } from "./types"
 import AdminPageHeader from '@/components/admin/AdminPageHeader';
 import { NewsCreateInterface, NewsResponseInterface } from "./types"
+import useDebouncedSearch from '@/hooks/useDebouncedSeacrh';
+
 
 const Page = () => {
 
@@ -39,12 +41,13 @@ const Page = () => {
     const pageShow = 5
     const [limit, setLimit] = useState<number>(8)
     const [skip, setSkip] = useState<number>(1)
-    const search = ""
+    const [search, setSearch] = useState<string>("")
+    const debouncedSearch = useDebouncedSearch(search)
 
 
     const { data: Data, isLoading } = useQuery({
-        queryFn: () => fetchApi<NewsResponseListInterface>(`${url}/news/read?search=${encodeURIComponent(search)}&skip=${(skip - 1)}&limit=${limit}`),
-        queryKey: ["product-admin", skip, limit]
+        queryFn: () => fetchApi<NewsResponseListInterface>(`${url}/news/read?search=${encodeURIComponent(debouncedSearch)}&skip=${(skip - 1)}&limit=${limit}`),
+        queryKey: ["product-admin", skip, limit, debouncedSearch]
     })
 
     const total = Data?.total ?? 0
@@ -102,6 +105,8 @@ const Page = () => {
                     SetModalCreate(!modalCreate);
                     setIsUpdate(false)
                 }}
+                search={search}
+                setInputSearch={(e) => setSearch(e)}
                 addLabel='Tulis berita'
             />
 

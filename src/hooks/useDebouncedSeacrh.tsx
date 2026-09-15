@@ -1,11 +1,18 @@
-import React from 'react'
+import { useState, useEffect } from 'react'
 
-const useDebouncedSeacrh = () => {
-  return (
-    <div>
+const useDebouncedSearch = (search: string) => {
+  const [debouncedSearch, setDebouncedSearch] = useState<string>("")
 
-    </div>
-  )
+  useEffect(() => {
+    const handler = setTimeout(() => {
+      setDebouncedSearch(search)
+    }, 500);
+    return () => {
+      clearTimeout(handler)
+    }
+  }, [search])
+
+  return debouncedSearch
 }
 
-export default useDebouncedSeacrh
+export default useDebouncedSearch
