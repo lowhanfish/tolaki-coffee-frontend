@@ -19,7 +19,14 @@ export const fetchApi = async <T>(
       return fetchApi<T>(url, option, false);
     }
 
-    if (!res.ok) throw new Error(`HTTP Error. Message : ${res.status}`);
+    if (!res.ok) {
+      const errorBody = await res.json().catch(() => null) as unknown;
+      const message = typeof errorBody === "object" && errorBody !== null && "message" in errorBody
+        ? String(errorBody.message)
+        : res.statusText;
+
+      throw new Error(`HTTP ${res.status}: ${message}`);
+    }
     return (await res.json()) as T;
   } catch (error) {
     throw new Error(`Error while fetching. Message : ${error}`);

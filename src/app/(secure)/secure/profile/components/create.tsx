@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, Dispatch, SetStateAction } from "react"
+import { Dispatch, SetStateAction } from "react"
 
 import Modal from '@/components/items/Modal'
 import Button from '@/components/items/Button'
@@ -8,89 +8,176 @@ import InputField from "@/components/items/InputField"
 import InputFile from "@/components/items/InputFile"
 import InputRichText from "@/components/items/InputRichText"
 import InputtextArea from "@/components/items/InputtextArea"
-
-
-
-
+import { fetchApi } from "@/lib/apiFetch"
+import { useDataStore } from "@/stores/dataStore"
+import { useMutation, useQueryClient } from "@tanstack/react-query"
+import { ProfileCreateInterface } from '../types'
 
 interface createProps {
     modal: boolean,
+    form: ProfileCreateInterface,
+    setForm: Dispatch<SetStateAction<ProfileCreateInterface>>
+    profileId: string | null,
+    emptyForm: () => void,
+    isUpdate: boolean,
     SetModal: Dispatch<SetStateAction<boolean>>
 }
 
-interface formProps {
-    id: string,
-    brand: string,
-    quotes: string,
-    desc: string,
-    val: string,
-    img: File[],
-}
+const Create = ({ modal, form, setForm, profileId, emptyForm, isUpdate, SetModal }: createProps) => {
+    const queryClient = useQueryClient()
+    const url = useDataStore((state) => state.url)
 
-const Create = ({ modal, SetModal }: createProps) => {
-    const [form, setForm] = useState<formProps>({
-        id: "",
-        brand: "",
-        quotes: "",
-        desc: "",
-        val: "",
-        img: [],
+    const closeModal = () => {
+        SetModal(false)
+        emptyForm()
+    }
+
+    const createMutation = useMutation({
+        mutationFn: (formData: FormData) => fetchApi(`${url}/company-profile/create`, {
+            method: "POST",
+            body: formData,
+        }),
+        onSuccess: async () => {
+            await queryClient.invalidateQueries({ queryKey: ["profile"] })
+            closeModal()
+        },
+        onError: (error: unknown) => {
+            alert(error instanceof Error ? error.message : String(error))
+        },
+    })
+
+    const updateMutation = useMutation({
+        mutationFn: ({ formData, id }: { formData: FormData, id: string }) =>
+            fetchApi(`${url}/company-profile/update/${id}`, {
+                method: "PATCH",
+                body: formData,
+            }),
+        onSuccess: async () => {
+            await queryClient.invalidateQueries({ queryKey: ["profile"] })
+            closeModal()
+        },
+        onError: (error: unknown) => {
+            alert(error instanceof Error ? error.message : String(error))
+        },
     })
 
     const saveData = () => {
-        console.log(form)
+        const formData = new FormData()
+
+        formData.append("brand", form.brand)
+        formData.append("quotes", form.quotes)
+        formData.append("description", form.description)
+        formData.append("detail", form.detail)
+        formData.append("email", form.email ?? "")
+        formData.append("phone", form.phone ?? "")
+        formData.append("address", form.address ?? "")
+
+        if (form.file) {
+            formData.append("file", form.file)
+        }
+
+        if (isUpdate) {
+            if (!profileId) return
+
+            updateMutation.mutate({ formData, id: profileId })
+            return
+        }
+
+        createMutation.mutate(formData)
     }
 
-    const SetObjForm = (data: string | number | File[], key: keyof formProps) => {
-        setForm({
-            ...form,
-            [key]: data
-        })
+    const SetObjForm = <K extends keyof ProfileCreateInterface>(value: ProfileCreateInterface[K], key: K) => {
+        setForm((prev) => ({
+            ...prev,
+            [key]: value,
+        }))
     }
+
+    const isPending = createMutation.isPending || updateMutation.isPending
+    const isFormInvalid = !(form.brand ?? "").trim()
+        || !(form.quotes ?? "").trim()
+        || !(form.description ?? "").trim()
+        || !(form.detail ?? "").trim()
+        || (isUpdate && !profileId)
 
     return (
-        <Modal size="lg" openModal={modal} setOpenModal={SetModal} color="primary" title="Config">
+        <Modal
+            size="lg"
+            openModal={modal}
+            setOpenModal={SetModal}
+            color="primary"
+            title={isUpdate ? "Update Company Profile" : "Create Company Profile"}
+        >
             <div className="flex gap-2 flex-col py-5 px-3">
-                <div className="w-full">
+                <div className="rounded-xl border border-dashed border-amber-300 bg-amber-50/60 p-3">
                     <InputFile
-                        title="Images Profile"
-                        onChange={(val) => {
-                            SetObjForm(val, "img")
-                        }}
+                        title="Upload Profile Image"
+                        multiple={false}
+                        onChange={(files) => SetObjForm(files[0] ?? null, "file")}
                     />
+                    <p className="mt-1 text-[10px] text-neutral-500">
+                        {form.file
+                            ? `Selected file: ${form.file.name}`
+                            : isUpdate
+                                ? "Leave empty to keep the current image."
+                                : "Choose one image file for the company profile."}
+                    </p>
                 </div>
+
                 <div>
                     <InputField
                         title="Brand Name"
                         type="text"
                         value={form.brand}
-                        onChange={(e) => SetObjForm(e, "brand")}
+                        onChange={(e) => SetObjForm(e as string, "brand")}
                     />
                 </div>
                 <div>
                     <InputField
-                        title="Quotes"
+                        title="Quote / Tagline"
                         type="text"
-                        value={form.brand}
-                        onChange={(e) => SetObjForm(e, "quotes")}
+                        value={form.quotes}
+                        onChange={(e) => SetObjForm(e as string, "quotes")}
                     />
                 </div>
                 <div>
                     <InputtextArea
-                        title="Quotes"
-                        value={form.brand}
-                        onChange={(e) => SetObjForm(e, "quotes")}
+                        title="Description"
+                        value={form.description}
+                        onChange={(e) => SetObjForm(e as string, "description")}
                     />
                 </div>
 
                 <div className="w-full">
                     <InputRichText
-                        title="Produce Description"
-                        value={form.val}
-                        onChange={(htmlText) => SetObjForm(htmlText, 'val')} // Mengirim data HTML kembali ke state 'desc'
+                        title="Profile Detail"
+                        value={form.detail}
+                        onChange={(htmlText) => SetObjForm(htmlText, "detail")}
                     />
                 </div>
 
+                <div className="grid grid-cols-1 gap-2 md:grid-cols-2">
+                    <InputField
+                        title="Email"
+                        type="email"
+                        value={form.email ?? ""}
+                        onChange={(e) => SetObjForm(e as string, "email")}
+                    />
+                    <InputField
+                        title="Phone Number"
+                        type="tel"
+                        value={form.phone ?? ""}
+                        onChange={(e) => SetObjForm(e as string, "phone")}
+                    />
+                </div>
+
+                <div>
+                    <InputtextArea
+                        title="Address"
+                        value={form.address ?? ""}
+                        onChange={(e) => SetObjForm(e as string, "address")}
+                    />
+                </div>
 
             </div>
 
@@ -99,11 +186,14 @@ const Create = ({ modal, SetModal }: createProps) => {
 
                     <Button
                         color="primary"
+                        disabled={isPending || isFormInvalid}
                         onClick={() => saveData()}
                     >
                         <div className="flex gap-2 items-center">
                             <p>💾</p>
-                            <p className="text-white font-bold text-[12px]">Save</p>
+                            <p className="text-white font-bold text-[12px]">
+                                {isPending ? "Saving..." : isUpdate ? "Update" : "Save"}
+                            </p>
                         </div>
                     </Button>
                 </div>
@@ -111,7 +201,8 @@ const Create = ({ modal, SetModal }: createProps) => {
 
                     <Button
                         color="danger"
-                        onClick={() => SetModal(!modal)}
+                        disabled={isPending}
+                        onClick={closeModal}
                     >
                         <div className="flex gap-2 items-center">
                             <p>🚫</p>
