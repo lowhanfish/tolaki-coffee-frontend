@@ -1,129 +1,152 @@
 "use client"
 
 import { useState, Dispatch, SetStateAction } from "react"
-
 import Modal from '@/components/items/Modal'
 import Button from '@/components/items/Button'
 import InputField from "@/components/items/InputField"
-import InputFile from "@/components/items/InputFile"
-import InputRichText from "@/components/items/InputRichText"
+import { useDataStore } from "@/stores/dataStore"
+import { fetchApi } from "@/lib/apiFetch"
+import { useMutation, useQueryClient } from "@tanstack/react-query"
 
+export interface PartnerFormProps {
+    id?: string
+    partner: string
+    area: number
+    altitude_from: number
+    altitude_to: number
+}
 
-
-
-
-interface createProps {
-    modal: boolean,
+interface CreateProps {
+    modal: boolean
     SetModal: Dispatch<SetStateAction<boolean>>
+    form: PartnerFormProps
+    setForm: Dispatch<SetStateAction<PartnerFormProps>>
+    emptyForm: () => void
+    isUpdate: boolean
 }
 
-interface formProps {
-    id: string,
-    title: string,
-    price: number,
-    unit_price: string,
-    stock: number,
-    desc: string,
-    img: File[],
-}
+const Create = ({ modal, SetModal, form, setForm, emptyForm, isUpdate }: CreateProps) => {
+    const url = useDataStore((state) => state.url)
+    const queryClient = useQueryClient()
+    const [loading, setLoading] = useState(false)
 
-const Create = ({ modal, SetModal }: createProps) => {
-    const [form, setForm] = useState<formProps>({
-        id: "",
-        title: "",
-        price: 0,
-        unit_price: "",
-        stock: 0,
-        desc: "",
-        img: [],
+    const SetObjForm = (data: string | number, key: keyof PartnerFormProps) => {
+        setForm((prev) => ({
+            ...prev,
+            [key]: data,
+        }))
+    }
+
+    const mutation = useMutation({
+        mutationFn: async () => {
+            const endpoint = isUpdate && form.id
+                ? `${url}/partner/update/${form.id}`
+                : `${url}/partner/create`
+
+            return fetchApi(endpoint, {
+                method: isUpdate ? 'PATCH' : 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    partner: form.partner,
+                    area: Number(form.area),
+                    altitude_from: Number(form.altitude_from),
+                    altitude_to: Number(form.altitude_to),
+                }),
+            })
+        },
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ['partners-admin'] })
+            queryClient.invalidateQueries({ queryKey: ['partner'] })
+            SetModal(false)
+            emptyForm()
+        },
+        onError: (err: any) => {
+            alert(err?.message || 'Gagal menyimpan data wilayah')
+        },
+        onSettled: () => {
+            setLoading(false)
+        },
     })
 
     const saveData = () => {
-        console.log(form)
-    }
-
-    const SetObjForm = (data: string | number | File[], key: keyof formProps) => {
-        setForm({
-            ...form,
-            [key]: data
-        })
+        if (!form.partner) {
+            alert('Harap isi nama wilayah kemitraan')
+            return
+        }
+        setLoading(true)
+        mutation.mutate()
     }
 
     return (
-        <Modal size="md" openModal={modal} setOpenModal={SetModal} color="primary" title="Config">
+        <Modal
+            size="md"
+            openModal={modal}
+            setOpenModal={SetModal}
+            color="primary"
+            title={isUpdate ? "Edit Wilayah Kemitraan" : "Tambah Wilayah Kemitraan"}
+        >
             <div className="flex gap-2 flex-col py-5 px-3">
                 <div>
                     <InputField
-                        title="Product Name"
+                        title="Nama Wilayah / Kelompok"
                         type="text"
-                        value={form.title}
-                        onChange={(e) => SetObjForm(e, "title")}
+                        value={form.partner}
+                        onChange={(e) => SetObjForm(e as string, "partner")}
+                        placholder="Contoh: Konawe Selatan"
                     />
                 </div>
                 <div className="flex gap-2 w-full">
                     <InputField
-                        title="Price"
+                        title="Luas Area (Hektare)"
                         type="number"
-                        value={form.price}
-                        onChange={(e) => SetObjForm(e, "price")}
+                        value={form.area}
+                        onChange={(e) => SetObjForm(Number(e), "area")}
+                        placholder="55"
                     />
-
+                </div>
+                <div className="flex gap-2 w-full">
                     <InputField
-                        title="Unit Price"
-                        type="text"
-                        value={form.unit_price}
-                        onChange={(e) => SetObjForm(e, "unit_price")}
+                        title="Ketinggian Dari (Mdpl)"
+                        type="number"
+                        value={form.altitude_from}
+                        onChange={(e) => SetObjForm(Number(e), "altitude_from")}
+                        placholder="500"
                     />
-                </div>
-
-                <div className="w-full">
-                    {/* <InputtextArea
-                        value={form.desc}
-                        onChange={(e) => SetObjForm(e, "desc")}
-                        title="Product Description"
-                    /> */}
-
-                    <InputRichText
-                        title="Produce Description"
-                        value={form.desc}
-                        onChange={(htmlText) => SetObjForm(htmlText, 'desc')} // Mengirim data HTML kembali ke state 'desc'
-                    />
-                </div>
-
-                <div className="w-full">
-
-
-                    <InputFile
-                        title="Product Images"
-                        onChange={(val) => {
-                            SetObjForm(val, "img")
-                        }}
+                    <InputField
+                        title="Ketinggian Sampai (Mdpl)"
+                        type="number"
+                        value={form.altitude_to}
+                        onChange={(e) => SetObjForm(Number(e), "altitude_to")}
+                        placholder="1000"
                     />
                 </div>
             </div>
 
             <div className="border-y-[0.1px] border-black/20 py-2 mb-3 mx-3 flex gap-2 justify-end">
                 <div className="w-25">
-
                     <Button
                         color="primary"
-                        onClick={() => saveData()}
+                        disabled={loading}
+                        onClick={saveData}
                     >
-                        <div className="flex gap-2 items-center">
+                        <div className="flex gap-2 items-center justify-center">
                             <p>💾</p>
-                            <p className="text-white font-bold text-[12px]">Save</p>
+                            <p className="text-white font-bold text-[12px]">{loading ? 'Menyimpan...' : 'Simpan'}</p>
                         </div>
                     </Button>
                 </div>
                 <div className="w-25">
-
                     <Button
                         color="danger"
-                        onClick={() => SetModal(!modal)}
+                        disabled={loading}
+                        onClick={() => {
+                            SetModal(false)
+                            emptyForm()
+                        }}
                     >
-                        <div className="flex gap-2 items-center">
+                        <div className="flex gap-2 items-center justify-center">
                             <p>🚫</p>
-                            <p className="text-white font-bold text-[12px]">Cancel</p>
+                            <p className="text-white font-bold text-[12px]">Batal</p>
                         </div>
                     </Button>
                 </div>

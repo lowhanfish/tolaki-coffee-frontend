@@ -13,9 +13,6 @@ import { ProfileCreateInterface, ProfileResponseInterface } from './types'
 import { fetchApi } from '@/lib/apiFetch';
 
 
-
-
-
 const Page = () => {
 
 

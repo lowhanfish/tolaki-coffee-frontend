@@ -17,6 +17,9 @@ import {
     BsPeople,
     BsPlusLg,
 } from 'react-icons/bs'
+import { useDataStore } from '@/stores/dataStore'
+import { useQuery } from '@tanstack/react-query'
+import { fetchApi } from '@/lib/apiFetch'
 
 const formatRupiah = (value: number) =>
     new Intl.NumberFormat('id-ID', {
@@ -24,45 +27,6 @@ const formatRupiah = (value: number) =>
         currency: 'IDR',
         maximumFractionDigits: 0,
     }).format(value)
-
-const summaryCards = [
-    {
-        title: 'Total Pendapatan',
-        value: formatRupiah(18450000),
-        note: 'dibanding bulan lalu',
-        change: '+12,5%',
-        positive: true,
-        icon: BsCart3,
-        iconClass: 'bg-amber-100 text-amber-700',
-    },
-    {
-        title: 'Produk Aktif',
-        value: '24',
-        note: '3 stok hampir habis',
-        change: '+2',
-        positive: true,
-        icon: BsBoxSeam,
-        iconClass: 'bg-emerald-100 text-emerald-700',
-    },
-    {
-        title: 'Mitra Petani',
-        value: '38',
-        note: 'dibanding bulan lalu',
-        change: '+5,6%',
-        positive: true,
-        icon: BsPeople,
-        iconClass: 'bg-sky-100 text-sky-700',
-    },
-    {
-        title: 'Pesan Masuk',
-        value: '17',
-        note: '5 belum dibaca',
-        change: '-8,2%',
-        positive: false,
-        icon: BsEnvelope,
-        iconClass: 'bg-rose-100 text-rose-700',
-    },
-]
 
 const salesOptions: Highcharts.Options = {
     chart: {
@@ -135,21 +99,21 @@ const stockOptions: Highcharts.Options = {
         spacing: [0, 0, 0, 0],
     },
     title: {
-        text: '156',
+        text: '100%',
         align: 'center',
         verticalAlign: 'middle',
         y: 4,
-        style: { color: '#262626', fontSize: '24px', fontWeight: '700' },
+        style: { color: '#262626', fontSize: '22px', fontWeight: '700' },
     },
     subtitle: {
-        text: 'Total Stok',
+        text: 'Kategori',
         align: 'center',
         verticalAlign: 'middle',
         y: 27,
         style: { color: '#737373', fontSize: '10px' },
     },
     credits: { enabled: false },
-    tooltip: { pointFormat: '<b>{point.y} pack</b>' },
+    tooltip: { pointFormat: '<b>{point.y}%</b>' },
     plotOptions: {
         pie: {
             innerSize: '72%',
@@ -163,47 +127,15 @@ const stockOptions: Highcharts.Options = {
     series: [
         {
             type: 'pie',
-            name: 'Stok',
+            name: 'Kategori',
             data: [
-                { name: 'Arabica', y: 52 },
-                { name: 'Robusta', y: 46 },
-                { name: 'Kopi Tolaki', y: 38 },
-                { name: 'Lainnya', y: 20 },
+                { name: 'Arabica', y: 45 },
+                { name: 'Robusta', y: 35 },
+                { name: 'Kopi Tolaki', y: 20 },
             ],
         },
     ],
 }
-
-const activities = [
-    {
-        icon: BsCart3,
-        title: 'Pesanan baru diterima',
-        detail: '#INV-0926 senilai Rp 850.000',
-        time: '8 menit lalu',
-        color: 'bg-amber-100 text-amber-700',
-    },
-    {
-        icon: BsNewspaper,
-        title: 'Artikel berhasil diterbitkan',
-        detail: 'Panen Raya Kopi Konawe 2026',
-        time: '1 jam lalu',
-        color: 'bg-sky-100 text-sky-700',
-    },
-    {
-        icon: BsPeople,
-        title: 'Mitra petani ditambahkan',
-        detail: 'Kelompok Tani Mekar Jaya',
-        time: '3 jam lalu',
-        color: 'bg-emerald-100 text-emerald-700',
-    },
-    {
-        icon: BsEnvelope,
-        title: 'Pesan pelanggan masuk',
-        detail: 'Permintaan informasi kemitraan',
-        time: 'Kemarin',
-        color: 'bg-rose-100 text-rose-700',
-    },
-]
 
 const quickActions = [
     { title: 'Tambah Produk', detail: 'Buat katalog baru', href: '/secure/products', icon: BsBoxSeam },
@@ -212,14 +144,10 @@ const quickActions = [
     { title: 'Lihat Pesan', detail: 'Tanggapi pelanggan', href: '/secure/contact', icon: BsEnvelope },
 ]
 
-const stockLegend = [
-    { name: 'Arabica', value: 52, color: 'bg-[#c37c01]' },
-    { name: 'Robusta', value: 46, color: 'bg-[#f2b84b]' },
-    { name: 'Kopi Tolaki', value: 38, color: 'bg-[#fde68a]' },
-    { name: 'Lainnya', value: 20, color: 'bg-neutral-200' },
-]
-
 const Page = () => {
+    const url = useDataStore((state) => state.url)
+    const profile = useDataStore((state) => state.profile)
+
     const today = new Intl.DateTimeFormat('id-ID', {
         weekday: 'long',
         day: 'numeric',
@@ -227,6 +155,52 @@ const Page = () => {
         year: 'numeric',
         timeZone: 'Asia/Makassar',
     }).format(new Date())
+
+    const { data: summary } = useQuery<any>({
+        queryFn: () => fetchApi(`${url}/order/dashboard-summary`),
+        queryKey: ['admin-dashboard-summary'],
+    })
+
+    const summaryCards = [
+        {
+            title: 'Total Pendapatan',
+            value: formatRupiah(summary?.totalRevenue || 0),
+            note: `${summary?.totalOrders || 0} total pesanan dibuat`,
+            change: '+12,5%',
+            positive: true,
+            icon: BsCart3,
+            iconClass: 'bg-amber-100 text-amber-700',
+        },
+        {
+            title: 'Produk Aktif',
+            value: String(summary?.totalProducts || 0),
+            note: 'Terdaftar di katalog',
+            change: '+1',
+            positive: true,
+            icon: BsBoxSeam,
+            iconClass: 'bg-emerald-100 text-emerald-700',
+        },
+        {
+            title: 'Mitra Petani',
+            value: String(summary?.totalPartners || 0),
+            note: 'Wilayah kemitraan binaan',
+            change: '+5%',
+            positive: true,
+            icon: BsPeople,
+            iconClass: 'bg-sky-100 text-sky-700',
+        },
+        {
+            title: 'Pesan Masuk',
+            value: String(summary?.totalInquiries || 0),
+            note: `${summary?.unreadInquiries || 0} belum dibaca`,
+            change: '+2',
+            positive: true,
+            icon: BsEnvelope,
+            iconClass: 'bg-rose-100 text-rose-700',
+        },
+    ]
+
+    const recentOrders = summary?.recentOrders || []
 
     return (
         <main className='min-h-full space-y-3 pb-3'>
@@ -236,8 +210,8 @@ const Page = () => {
                 <div className='relative flex flex-col gap-4 md:flex-row md:items-center md:justify-between'>
                     <div>
                         <p className='text-[11px] font-semibold uppercase tracking-[0.18em] text-amber-400'>Kopi Tolaki Admin</p>
-                        <h1 className='mt-1 text-2xl font-bold'>Selamat datang kembali, Kiken!</h1>
-                        <p className='mt-1 text-[12px] text-white/65'>Berikut ringkasan perkembangan bisnis Anda hari ini.</p>
+                        <h1 className='mt-1 text-2xl font-bold'>Selamat datang kembali, {profile?.name || 'Admin'}!</h1>
+                        <p className='mt-1 text-[12px] text-white/65'>Berikut ringkasan perkembangan bisnis Kopi Tolaki hari ini.</p>
                     </div>
                     <div className='rounded-md border border-white/10 bg-white/8 px-4 py-2 backdrop-blur-sm'>
                         <p className='text-[10px] uppercase tracking-wider text-white/50'>Hari ini</p>
@@ -275,11 +249,11 @@ const Page = () => {
                     <div className='flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between'>
                         <div>
                             <p className='text-[15px] font-bold text-neutral-800'>Tren Penjualan</p>
-                            <p className='mt-0.5 text-[11px] text-neutral-400'>Perbandingan pendapatan tujuh bulan terakhir</p>
+                            <p className='mt-0.5 text-[11px] text-neutral-400'>Perbandingan pendapatan beberapa bulan terakhir</p>
                         </div>
                         <div className='rounded-md bg-amber-50 px-3 py-2 text-right'>
-                            <p className='text-[10px] text-amber-700'>Bulan ini</p>
-                            <p className='text-[13px] font-bold text-amber-800'>{formatRupiah(18450000)}</p>
+                            <p className='text-[10px] text-amber-700'>Total Pesanan</p>
+                            <p className='text-[13px] font-bold text-amber-800'>{formatRupiah(summary?.totalRevenue || 0)}</p>
                         </div>
                     </div>
                     <HighchartsReact highcharts={Highcharts} options={salesOptions} />
@@ -287,20 +261,19 @@ const Page = () => {
 
                 <article className='col-span-12 rounded-lg border border-neutral-100 bg-white p-4 shadow-sm xl:col-span-4'>
                     <div>
-                        <p className='text-[15px] font-bold text-neutral-800'>Komposisi Stok</p>
-                        <p className='mt-0.5 text-[11px] text-neutral-400'>Persediaan produk yang tersedia</p>
+                        <p className='text-[15px] font-bold text-neutral-800'>Komposisi Produk</p>
+                        <p className='mt-0.5 text-[11px] text-neutral-400'>Distribusi varietas produk di toko</p>
                     </div>
                     <HighchartsReact highcharts={Highcharts} options={stockOptions} />
-                    <div className='grid grid-cols-2 gap-x-5 gap-y-3'>
-                        {stockLegend.map((item) => (
-                            <div key={item.name} className='flex items-center gap-2'>
-                                <span className={`h-2.5 w-2.5 rounded-full ${item.color}`} />
-                                <div className='flex-1'>
-                                    <p className='text-[10px] text-neutral-400'>{item.name}</p>
-                                    <p className='text-[12px] font-bold text-neutral-700'>{item.value} pack</p>
-                                </div>
-                            </div>
-                        ))}
+                    <div className='mt-2 space-y-2 text-xs'>
+                        <div className='flex items-center justify-between border-t border-neutral-100 pt-2'>
+                            <span className='text-neutral-500'>Total Produk Terdaftar</span>
+                            <span className='font-bold text-neutral-800'>{summary?.totalProducts || 0} item</span>
+                        </div>
+                        <div className='flex items-center justify-between'>
+                            <span className='text-neutral-500'>Total Pesanan Masuk</span>
+                            <span className='font-bold text-neutral-800'>{summary?.totalOrders || 0} transaksi</span>
+                        </div>
                     </div>
                 </article>
             </section>
@@ -309,28 +282,43 @@ const Page = () => {
                 <article className='col-span-12 rounded-lg border border-neutral-100 bg-white p-4 shadow-sm lg:col-span-7'>
                     <div className='flex items-center justify-between border-b border-neutral-100 pb-3'>
                         <div>
-                            <p className='text-[15px] font-bold text-neutral-800'>Aktivitas Terbaru</p>
-                            <p className='mt-0.5 text-[11px] text-neutral-400'>Pembaruan terkini dari seluruh sistem</p>
+                            <p className='text-[15px] font-bold text-neutral-800'>Pesanan Terbaru</p>
+                            <p className='mt-0.5 text-[11px] text-neutral-400'>Transaksi pelanggan terbaru dari website</p>
                         </div>
                         <BsClockHistory className='text-[18px] text-amber-600' />
                     </div>
                     <div className='divide-y divide-neutral-100'>
-                        {activities.map((item) => {
-                            const Icon = item.icon
-
-                            return (
-                                <div key={item.title} className='flex items-center gap-3 py-3'>
-                                    <div className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-full ${item.color}`}>
-                                        <Icon className='text-[15px]' />
+                        {recentOrders.length === 0 ? (
+                            <div className='py-6 text-center text-xs text-neutral-400'>
+                                Belum ada transaksi pesanan terbaru.
+                            </div>
+                        ) : (
+                            recentOrders.slice(0, 5).map((ord: any) => (
+                                <div key={ord.id} className='flex items-center justify-between py-3'>
+                                    <div className='flex items-center gap-3'>
+                                        <div className='flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-amber-100 text-amber-700'>
+                                            <BsCart3 className='text-[15px]' />
+                                        </div>
+                                        <div className='min-w-0'>
+                                            <p className='truncate text-[12px] font-bold text-neutral-700'>
+                                                {ord.customerName} ({ord.orderNumber})
+                                            </p>
+                                            <p className='truncate text-[10px] text-neutral-400'>
+                                                {ord.items?.length || 0} produk • {ord.status}
+                                            </p>
+                                        </div>
                                     </div>
-                                    <div className='min-w-0 flex-1'>
-                                        <p className='truncate text-[12px] font-bold text-neutral-700'>{item.title}</p>
-                                        <p className='truncate text-[10px] text-neutral-400'>{item.detail}</p>
+                                    <div className='text-right'>
+                                        <p className='text-xs font-bold text-amber-800'>
+                                            {formatRupiah(Number(ord.totalAmount))}
+                                        </p>
+                                        <p className='text-[9px] text-neutral-400'>
+                                            {new Date(ord.createdAt).toLocaleDateString('id-ID')}
+                                        </p>
                                     </div>
-                                    <p className='shrink-0 text-[10px] text-neutral-400'>{item.time}</p>
                                 </div>
-                            )
-                        })}
+                            ))
+                        )}
                     </div>
                 </article>
 
@@ -363,22 +351,6 @@ const Page = () => {
                                 </Link>
                             )
                         })}
-                    </div>
-
-                    <div className='mt-3 flex items-center justify-between rounded-md bg-linear-to-r from-amber-700 to-yellow-600 p-3 text-white'>
-                        <div className='flex items-center gap-3'>
-                            <div className='flex h-9 w-9 items-center justify-center rounded-full bg-white/15'>
-                                <BsEye />
-                            </div>
-                            <div>
-                                <p className='text-[10px] text-white/70'>Kunjungan website</p>
-                                <p className='text-[16px] font-bold'>1.284 <span className='text-[9px] font-normal text-white/60'>bulan ini</span></p>
-                            </div>
-                        </div>
-                        <div className='flex items-center gap-1 text-[10px] font-bold text-emerald-100'>
-                            <BsArrowUpRight />
-                            18,4%
-                        </div>
                     </div>
                 </article>
             </section>

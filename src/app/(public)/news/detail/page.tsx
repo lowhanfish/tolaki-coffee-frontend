@@ -1,145 +1,112 @@
+'use client'
+
+import { Suspense } from 'react'
+import Image from 'next/image'
+import Link from 'next/link'
+import { useSearchParams } from 'next/navigation'
 import HeaderPage from '@/components/HeaderPage'
-import SideBarNews from '../components/SideBarNews'
-import CardNewsList from '@/components/items/CardNewsList'
-import { FaSearch } from "react-icons/fa";
+import SideBarNews from '@/features/news/components/SideBarNews'
+import { BsArrowLeft, BsCalendar3, BsPerson } from 'react-icons/bs'
+import { useQuery } from '@tanstack/react-query'
+import { useDataStore } from '@/stores/dataStore'
+import { fetchApi } from '@/lib/apiFetch'
+import { NewsResponseInterface } from '@/app/(secure)/secure/news/types'
 
+const defaultNews = {
+    title: 'Mendukung Petani Lokal, Menjaga Kualitas Kopi Tolaki',
+    description: 'Kami terus berkomitmen mendampingi petani kopi di Sulawesi Tenggara untuk menghasilkan kopi berkualitas tinggi dan berkelanjutan.',
+    news: '<p>Kopi Tolaki tumbuh di tanah subur Sulawesi Tenggara dengan kearifan lokal yang diwariskan turun-temurun. Sejak masa panen hingga proses pengolahan pasca panen, kami bermitra erat bersama kelompok tani untuk memastikan standar mutu terbaik.</p><p>Melalui pelatihan berkelanjutan, bibit unggul, dan fasilitas penjemuran modern, kesejahteraan para petani mitra kami meningkat seiring dengan tingginya apresiasi pencinta kopi terhadap cita rasa otentik kopi Sulawesi Tenggara.</p>',
+    file: '/images/about.jpg',
+    createdAt: new Date().toISOString(),
+    source: 'Kopi Tolaki Editorial',
+}
 
+const NewsDetailContent = () => {
+    const searchParams = useSearchParams()
+    const id = searchParams.get('id')
+    const url = useDataStore((state) => state.url)
 
-const KategoriList = [
-    { id: "1", title: "Semua Kategori" },
-    { id: "2", title: "Berita Perusahaan" },
-    { id: "3", title: "Produk" },
-    { id: "4", title: "Petani & Kemitraan" },
-    { id: "5", title: "Semua Kategori" },
-    { id: "6", title: "Edukasi Kopi" },
-    { id: "7", title: "Event & Kegiatan" },
-]
+    const { data: apiNews, isLoading } = useQuery({
+        queryFn: () => fetchApi<NewsResponseInterface>(`${url}/news/readOne/${id}`),
+        queryKey: ['news-detail', id],
+        enabled: Boolean(id),
+    })
 
-const ListNews = [
-    {
-        id: "1",
-        title: "Mendukung Petani Lokal, Menjaga Kualitas Kopi Tolaki",
-        description: "Kami terus berkomitmen mendampingi petani kopi di Sulawesi Tenggara untuk menghasilkan kopi berkualitas tinggi dan berkelanjutan.",
-        file: "/images/about.jpg",
-        date: "2 Agustus 2026"
-    },
-    {
-        id: "2",
-        title: "Panen Kopi Berkualitas, Langkah Awal Rasa yang Istimewa",
-        description: "Proses panen yang tepat waktu dan selektif menjadi kunci utama dalam menjaga cita rasa kopi terbaik.",
-        file: "/images/about.jpg",
-        date: "2 Agustus 2026"
-    },
-    {
-        id: "3",
-        title: "Kopi Tolaki Premium dengan Kemasan Baru",
-        description: "Tampilan baru, rasa tetap istimewa. Nikmati pengalaman ngopi yang lebih berkesan.",
-        file: "/images/about.jpg",
-        date: "2 Agustus 2026"
-    },
-    {
-        id: "4",
-        title: "Pelatihan Petani: Tingkatkan Kualitas, Tingkatkan Kesejahteraan",
-        description: "Kegiatan pelatihan rutin untuk petani mitra kami dalam budidaya kopi berkelanjutan.",
-        file: "/images/about.jpg",
-        date: "2 Agustus 2026"
-    },
-    {
-        id: "5",
-        title: "Komitmen Kami pada Proses yang Berkelanjutan",
-        description: "Dari hulu ke hilir, setiep proses kami rancang untuk menjaga kualitas dan kelestarian lingkungan.",
-        file: "/images/about.jpg",
-        date: "2 Agustus 2026"
-    },
-    {
-        id: "6",
-        title: "Mengenal Single Origin: Apa dan Mengapa Istimewa?",
-        description: "Pelajari lebih dalam tentang kopi single origin dan keunikan rasa dari setiap daerah.",
-        file: "/images/about.jpg",
-        date: "2 Agustus 2026"
-    },
-    {
-        id: "7",
-        title: "Kopi Tolaki Hadir di Festival Kopi Nusantara 2025?",
-        description: "Terima kasih kepada semua yang telah berkunjung dan mendukung kami di acara ini!",
-        file: "/images/about.jpg",
-        date: "2 Agustus 2026"
-    },
-    {
-        id: "8",
-        title: "Cerita Pak La Ode: Dari Petani hingga Mitra Kopi Tolaki",
-        description: "Perjalanan inspiratif salah satu petani mitra kami yang penuh dedikasi dan semangat.",
-        file: "/images/about.jpg",
-        date: "2 Agustus 2026"
-    },
-    {
-        id: "9",
-        title: "Tips Menyimpan Kopi agar Tetap Segar dan Nikmat",
-        description: "Cara sederhana untuk menjaga kesegaran kopi bubuk maupun biji kopi di rumah.",
-        file: "/images/about.jpg",
-        date: "2 Agustus 2026"
-    },
+    const news: any = apiNews || defaultNews
+    const imageSrc = news.file
+        ? news.file.startsWith('/') || news.file.startsWith('http')
+            ? news.file
+            : `${url}/uploads/news/${news.file}`
+        : '/images/about.jpg'
 
-]
-
-const page = () => {
     return (
-        <div className='bg relative '>
-            <div className=''>
-                <HeaderPage height='h-20' image={`/images/header_product7.webp`}>
-                    <div className='z-2 flex flex-col items-center justify-center'>
-                        <p className='text-[45px]'>Anoa Coffee</p>
-                        <p className='-mt-2'>Product kami</p>
-                    </div>
-                </HeaderPage>
-            </div>
+        <div className='bg relative min-h-screen'>
+            <HeaderPage height='h-20' image='/images/header_product2.webp'>
+                <div className='z-2 flex flex-col items-center justify-center text-white'>
+                    <p className='text-3xl font-bold md:text-5xl'>Kabar & Cerita</p>
+                    <p className='mt-1 text-xs md:text-sm text-white/80'>Artikel seputar kopi dan kabar mitra petani kami</p>
+                </div>
+            </HeaderPage>
 
-            <div className='min-h-75 px-5 md:px-10 xl:px-38 py-5 xl:py-10 text-neutral-800'>
-                <p className='text-[32px] font-bold'>Semua Berita</p>
-                <div className='grid grid-cols-1 lg:grid-cols-12 gap-5 pt-3'>
-                    <div className='col-span-1 lg:col-span-9'>
-                        <p>
+            <div className='mx-auto max-w-7xl px-4 py-8 md:px-8 xl:px-16 text-neutral-800'>
+                <Link href='/news' className='inline-flex items-center gap-2 text-xs font-semibold text-amber-800 hover:underline mb-6'>
+                    <BsArrowLeft />
+                    <span>Kembali ke Semua Berita</span>
+                </Link>
 
+                <div className='grid grid-cols-1 lg:grid-cols-12 gap-8'>
+                    {/* Konten Artikel */}
+                    <article className='lg:col-span-8 rounded-2xl border border-neutral-100 bg-white p-6 md:p-8 shadow-sm space-y-4'>
+                        <span className='rounded-full bg-amber-50 px-3 py-1 text-[10px] font-bold uppercase tracking-wider text-amber-800'>
+                            Berita Utama
+                        </span>
+                        <h1 className='text-2xl md:text-3xl font-bold text-neutral-800 leading-snug'>
+                            {news.title}
+                        </h1>
 
-                            Lorem ipsum dolor sit amet, qui consectetur ut culpa laboris non. In aute ex deserunt officia fugiat magna dolor in exercitation. Laborum laborum cillum ut excepteur aliqua sed ut. Proident laborum nulla nostrud ullamco minim duis anim cupidatat officia.
-                            Proident qui non cupidatat quis ex velit nostrud ut dolore voluptate laboris. Cillum ullamco incididunt deserunt mollit ut dolore enim ea. Consequat proident eiusmod velit consequat voluptate dolore magna. Est sunt minim duis laborum ea enim laborum in aliqua exercitation dolore et.
-                            Enim commodo est officia sint anim irure irure do. Ut enim pariatur consequat aliqua minim eu irure cillum cillum excepteur in. Irure irure minim in consectetur esse non non in aliqua velit quis. Adipiscing tempor irure excepteur est occaecat pariatur ut.
-                            Id minim in commodo nostrud in nostrud occaecat qui ex. Culpa nulla reprehenderit cupidatat pariatur laboris anim in consequat. Quis ad enim veniam dolore tempor in voluptate ullamco quis. Aliquip qui non duis dolore in in eu elit tempor non. Occaecat sint adipiscing nulla commodo adipiscing sunt pariatur pariatur id.
-                            Nisi ea magna aute in est sunt qui ea ut in pariatur commodo. Aliquip ut incididunt nostrud do veniam veniam ex voluptate. Adipiscing aliquip aliqua quis in ut labore ut deserunt laboris. Et commodo laborum officia anim dolore officia tempor ea enim excepteur. In culpa nostrud officia elit velit dolor laboris ea consectetur fugiat consectetur sed.
-
-
-
-                        </p>
-                    </div>
-                    <div className='col-span-1 lg:col-span-3 '>
-                        <div className='flex flex-col gap-3'>
-
-
-                            <div className='border-[0.5px] border-neutral-400 rounded-2xl p-5'>
-                                <p className='text-[18px] font-bold'>Berita Populer</p>
-
-                                <div className='flex flex-col gap-5 lg:gap-3  pt-3'>
-                                    {
-                                        ListNews.map((item, index) => (
-                                            <div key={item.id}>
-                                                <CardNewsList
-                                                    title={item.title}
-                                                    file={item.file}
-                                                    date={item.date}
-                                                />
-                                            </div>
-                                        ))
-                                    }
-                                </div>
-
+                        <div className='flex flex-wrap items-center gap-4 text-xs text-neutral-400 border-y border-neutral-100 py-3'>
+                            <div className='flex items-center gap-1.5'>
+                                <BsCalendar3 />
+                                <span>{new Date(news.createdAt).toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' })}</span>
                             </div>
-
+                            <div className='flex items-center gap-1.5'>
+                                <BsPerson />
+                                <span>{news.source || 'Tim Redaksi Kopi Tolaki'}</span>
+                            </div>
                         </div>
-                    </div>
+
+                        <div className='relative h-64 sm:h-96 w-full overflow-hidden rounded-xl bg-neutral-100'>
+                            <Image
+                                alt={news.title}
+                                src={imageSrc}
+                                fill
+                                className='object-cover'
+                                priority
+                            />
+                        </div>
+
+                        <div
+                            className='prose prose-amber max-w-none text-xs sm:text-sm leading-7 text-neutral-700 pt-3 space-y-3'
+                            dangerouslySetInnerHTML={{ __html: news.news }}
+                        />
+                    </article>
+
+                    {/* Sidebar Berita Populer */}
+                    <aside className='lg:col-span-4'>
+                        <SideBarNews />
+                    </aside>
                 </div>
             </div>
         </div>
     )
 }
 
-export default page
+const Page = () => {
+    return (
+        <Suspense fallback={<div className='min-h-screen flex items-center justify-center'>Memuat artikel...</div>}>
+            <NewsDetailContent />
+        </Suspense>
+    )
+}
+
+export default Page

@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import AdminPageHeader from '@/components/admin/AdminPageHeader'
 import Button from '@/components/items/Button'
 import InputField from '@/components/items/InputField'
@@ -10,103 +10,189 @@ import {
     BsClock,
     BsEnvelope,
     BsGeoAlt,
-    BsInputCursorText,
     BsMap,
     BsPencilSquare,
     BsPhone,
-    BsSend,
+    BsTrash,
+    BsChatLeftDots,
 } from 'react-icons/bs'
+import { useDataStore } from '@/stores/dataStore'
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
+import { fetchApi } from '@/lib/apiFetch'
 
-interface ContactPageData {
-    hero: { title: string; subtitle: string }
+interface ContactData {
+    id?: string
+    storeName: string
     address: string
     phone: string
-    email: string
-    operationalDays: string
-    latitude: number
-    longitude: number
-    formFields: Array<{ label: string; type: string; required: boolean }>
+    email?: string
+    mapsUrl?: string
+    openHours?: string
+    instagram?: string
+    facebook?: string
+    tiktok?: string
+    tokopedia?: string
+    shopee?: string
 }
 
-const contactData: ContactPageData = {
-    hero: { title: 'Anoa Coffee', subtitle: 'Hubungi kami' },
+interface Inquiry {
+    id: string
+    name: string
+    email: string
+    phone?: string
+    subject: string
+    message: string
+    createdAt: string
+}
+
+const defaultContact: ContactData = {
+    storeName: 'Kopi Tolaki Utama',
     address: 'Kendari, Sulawesi Tenggara, Indonesia',
     phone: '+62 812-3456-7890',
     email: 'info@kopitolaki.id',
-    operationalDays: 'Senin - Sabtu',
-    latitude: -4.0435,
-    longitude: 122.5264,
-    formFields: [
-        { label: 'Nama lengkap', type: 'Teks', required: true },
-        { label: 'Email', type: 'Email', required: true },
-        { label: 'Nomor telepon', type: 'Telepon', required: false },
-        { label: 'Subjek', type: 'Teks', required: true },
-        { label: 'Pesan', type: 'Teks panjang', required: true },
-    ],
+    openHours: 'Senin - Sabtu: 08.00 - 22.00',
+    mapsUrl: 'https://maps.google.com',
 }
 
 const Page = () => {
-    const [data, setData] = useState<ContactPageData>(contactData)
-    const [draft, setDraft] = useState<ContactPageData>(contactData)
+    const url = useDataStore((state) => state.url)
+    const queryClient = useQueryClient()
+
     const [modal, setModal] = useState(false)
+    const [draft, setDraft] = useState<ContactData>(defaultContact)
+
+    // Query Contact Data
+    const { data: contactResponse, isLoading: loadingContact } = useQuery({
+        queryFn: () => fetchApi<any>(`${url}/contact/read`),
+        queryKey: ['admin-contact'],
+    })
+
+    const contactItem: ContactData | null = contactResponse?.data?.[0] || null
+
+    useEffect(() => {
+        if (contactItem) {
+            setDraft({
+                id: contactItem.id,
+                storeName: contactItem.storeName || '',
+                address: contactItem.address || '',
+                phone: contactItem.phone || '',
+                email: contactItem.email || '',
+                openHours: contactItem.openHours || '',
+                mapsUrl: contactItem.mapsUrl || '',
+                instagram: contactItem.instagram || '',
+                facebook: contactItem.facebook || '',
+                tiktok: contactItem.tiktok || '',
+                tokopedia: contactItem.tokopedia || '',
+                shopee: contactItem.shopee || '',
+            })
+        }
+    }, [contactItem])
+
+    // Query Messages
+    const { data: messages = [], isLoading: loadingMessages } = useQuery<Inquiry[]>({
+        queryFn: () => fetchApi<Inquiry[]>(`${url}/contact/messages`),
+        queryKey: ['admin-messages'],
+    })
+
+    // Save Contact Mutation
+    const saveContactMutation = useMutation({
+        mutationFn: async (payload: ContactData) => {
+            if (payload.id) {
+                return fetchApi(`${url}/contact/update/${payload.id}`, {
+                    method: 'PATCH',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload),
+                })
+            } else {
+                return fetchApi(`${url}/contact/create`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload),
+                })
+            }
+        },
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ['admin-contact'] })
+            setModal(false)
+            alert('Data kontak berhasil disimpan!')
+        },
+        onError: (err: any) => {
+            alert(err?.message || 'Gagal menyimpan kontak')
+        },
+    })
+
+    // Delete Message Mutation
+    const deleteMessageMutation = useMutation({
+        mutationFn: (id: string) =>
+            fetchApi(`${url}/contact/messages/${id}`, {
+                method: 'DELETE',
+            }),
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ['admin-messages'] })
+        },
+        onError: (err: any) => {
+            alert(err?.message || 'Gagal menghapus pesan')
+        },
+    })
+
+    const activeData = contactItem || defaultContact
 
     const contactItems = [
-        { label: 'Alamat', value: data.address, icon: BsGeoAlt, color: 'bg-amber-50 text-amber-700' },
-        { label: 'Telepon', value: data.phone, icon: BsPhone, color: 'bg-emerald-50 text-emerald-700' },
-        { label: 'Email', value: data.email, icon: BsEnvelope, color: 'bg-sky-50 text-sky-700' },
-        { label: 'Jam Operasional', value: data.operationalDays, icon: BsClock, color: 'bg-violet-50 text-violet-700' },
+        { label: 'Nama Toko / Usaha', value: activeData.storeName, icon: BsGeoAlt, color: 'bg-amber-50 text-amber-700' },
+        { label: 'Telepon', value: activeData.phone, icon: BsPhone, color: 'bg-emerald-50 text-emerald-700' },
+        { label: 'Email', value: activeData.email || '-', icon: BsEnvelope, color: 'bg-sky-50 text-sky-700' },
+        { label: 'Jam Operasional', value: activeData.openHours || '-', icon: BsClock, color: 'bg-violet-50 text-violet-700' },
     ]
 
-    const openUpdateModal = () => {
-        setDraft(data)
-        setModal(true)
-    }
-
-    const updateField = <K extends keyof ContactPageData>(key: K, value: ContactPageData[K]) => {
-        setDraft((current) => ({ ...current, [key]: value }))
-    }
-
-    const saveData = () => {
-        setData(draft)
-        setModal(false)
+    const handleSave = () => {
+        saveContactMutation.mutate(draft)
     }
 
     return (
-        <main className='space-y-3 pb-3'>
+        <main className='space-y-4 pb-3'>
             <AdminPageHeader
                 eyebrow='Konten Website'
                 title='Kelola Halaman Kontak'
-                description='Informasi yang ditampilkan kepada pengunjung pada halaman kontak Kopi Tolaki.'
+                description='Informasi toko dan pesan masuk dari para pengunjung Kopi Tolaki.'
                 icon={BsEnvelope}
-                onAdd={openUpdateModal}
-                addLabel='Perbarui data'
+                onAdd={() => setModal(true)}
+                addLabel='Perbarui Kontak'
                 actionIcon={BsPencilSquare}
             />
 
             <section className='grid grid-cols-1 gap-3 xl:grid-cols-12'>
                 <article className='relative overflow-hidden rounded-xl bg-linear-to-br from-amber-600 to-amber-800 p-5 text-white shadow-sm xl:col-span-4'>
-                    <div className='absolute -right-8 -top-8 h-32 w-32 rounded-full border-24 border-white/8' />
-                    <p className='text-[9px] font-semibold uppercase tracking-[0.2em] text-amber-200'>Tampilan header publik</p>
-                    <h2 className='relative mt-8 text-2xl font-bold'>{data.hero.title}</h2>
-                    <p className='relative mt-1 text-xs text-white/65'>{data.hero.subtitle}</p>
-                    <div className='relative mt-8 inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/10 px-3 py-1.5 text-[9px] font-semibold backdrop-blur-sm'>
+                    <p className='text-[9px] font-semibold uppercase tracking-[0.2em] text-amber-200'>Identitas Kontak</p>
+                    <h2 className='mt-4 text-2xl font-bold'>{activeData.storeName}</h2>
+                    <p className='mt-2 text-xs text-white/80'>{activeData.address}</p>
+                    <div className='mt-8 inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/10 px-3 py-1.5 text-[9px] font-semibold backdrop-blur-sm'>
                         <span className='h-1.5 w-1.5 rounded-full bg-emerald-300' />
-                        Ditampilkan di halaman kontak
+                        Data aktif di halaman kontak publik
                     </div>
                 </article>
 
                 <article className='rounded-xl border border-neutral-100 bg-white p-4 shadow-sm xl:col-span-8'>
                     <div className='mb-4 flex items-center justify-between border-b border-neutral-100 pb-3'>
-                        <div><h2 className='text-sm font-bold text-neutral-800'>Informasi kontak</h2><p className='mt-0.5 text-[10px] text-neutral-400'>Data pada bagian “Informasi Kontak” di website</p></div>
-                        <span className='rounded-full bg-emerald-50 px-2.5 py-1 text-[9px] font-bold text-emerald-700'>4 informasi aktif</span>
+                        <div>
+                            <h2 className='text-sm font-bold text-neutral-800'>Informasi Kontak Toko</h2>
+                            <p className='text-[10px] text-neutral-400'>Data yang dilihat pengunjung pada website</p>
+                        </div>
+                        <span className='rounded-full bg-emerald-50 px-2.5 py-1 text-[9px] font-bold text-emerald-700'>
+                            Aktif
+                        </span>
                     </div>
                     <div className='grid grid-cols-1 gap-3 sm:grid-cols-2'>
                         {contactItems.map((item) => {
                             const Icon = item.icon
                             return (
-                                <div key={item.label} className='flex min-w-0 items-center gap-3 rounded-xl border border-neutral-100 bg-neutral-50/60 p-3.5'>
-                                    <div className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-lg ${item.color}`}><Icon /></div>
-                                    <div className='min-w-0'><p className='text-[9px] font-semibold uppercase tracking-wider text-neutral-400'>{item.label}</p><p className='mt-0.5 truncate text-[11px] font-bold text-neutral-700'>{item.value}</p></div>
+                                <div key={item.label} className='flex items-center gap-3 rounded-xl border border-neutral-100 bg-neutral-50/60 p-3.5'>
+                                    <div className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-lg ${item.color}`}>
+                                        <Icon />
+                                    </div>
+                                    <div className='min-w-0'>
+                                        <p className='text-[9px] font-semibold uppercase tracking-wider text-neutral-400'>{item.label}</p>
+                                        <p className='truncate text-[11px] font-bold text-neutral-700'>{item.value}</p>
+                                    </div>
                                 </div>
                             )
                         })}
@@ -114,87 +200,122 @@ const Page = () => {
                 </article>
             </section>
 
-            <section className='grid grid-cols-1 gap-3 xl:grid-cols-12'>
-                <article className='rounded-xl border border-neutral-100 bg-white p-4 shadow-sm xl:col-span-5'>
-                    <div className='flex items-center gap-3 border-b border-neutral-100 pb-3'>
-                        <div className='flex h-9 w-9 items-center justify-center rounded-lg bg-amber-50 text-amber-700'><BsMap /></div>
-                        <div><h2 className='text-sm font-bold text-neutral-800'>Lokasi pada peta</h2><p className='text-[10px] text-neutral-400'>Titik lokasi yang digunakan Google Maps</p></div>
-                    </div>
-                    <div className='relative mt-4 flex min-h-48 items-center justify-center overflow-hidden rounded-xl bg-[#eee9df]'>
-                        <div className='absolute inset-0 opacity-35 [background-image:linear-gradient(#c7bda9_1px,transparent_1px),linear-gradient(90deg,#c7bda9_1px,transparent_1px)] [background-size:28px_28px]' />
-                        <div className='relative flex flex-col items-center text-center'>
-                            <div className='flex h-12 w-12 items-center justify-center rounded-full bg-amber-600 text-xl text-white shadow-lg ring-8 ring-amber-600/15'><BsGeoAlt /></div>
-                            <p className='mt-3 text-xs font-bold text-neutral-700'>Kendari, Sulawesi Tenggara</p>
-                            <p className='mt-1 text-[9px] text-neutral-500'>{data.latitude}, {data.longitude}</p>
+            {/* Pesan Masuk dari Pengunjung */}
+            <section className='rounded-xl border border-neutral-100 bg-white p-4 shadow-sm'>
+                <div className='mb-4 flex items-center justify-between border-b border-neutral-100 pb-3'>
+                    <div className='flex items-center gap-2'>
+                        <BsChatLeftDots className='text-amber-600' />
+                        <div>
+                            <h2 className='text-sm font-bold text-neutral-800'>Pesan Masuk Pengunjung</h2>
+                            <p className='text-[10px] text-neutral-400'>Pesan yang dikirim pengunjung melalui formulir kontak</p>
                         </div>
                     </div>
-                </article>
+                    <span className='rounded-full bg-sky-50 px-2.5 py-1 text-[9px] font-bold text-sky-700'>
+                        {messages.length} pesan
+                    </span>
+                </div>
 
-                <article className='rounded-xl border border-neutral-100 bg-white p-4 shadow-sm xl:col-span-7'>
-                    <div className='flex items-center justify-between border-b border-neutral-100 pb-3'>
-                        <div className='flex items-center gap-3'>
-                            <div className='flex h-9 w-9 items-center justify-center rounded-lg bg-sky-50 text-sky-700'><BsInputCursorText /></div>
-                            <div><h2 className='text-sm font-bold text-neutral-800'>Formulir kirim pesan</h2><p className='text-[10px] text-neutral-400'>Data yang perlu diisi pengunjung</p></div>
-                        </div>
-                        <BsSend className='text-amber-600' />
+                {loadingMessages ? (
+                    <div className='space-y-2'>
+                        {[...Array(3)].map((_, i) => (
+                            <div key={i} className='h-16 animate-pulse rounded-lg bg-neutral-100' />
+                        ))}
                     </div>
-                    <div className='mt-3 divide-y divide-neutral-100'>
-                        {data.formFields.map((field, index) => (
-                            <div key={field.label} className='flex items-center gap-3 py-2.5'>
-                                <span className='flex h-6 w-6 shrink-0 items-center justify-center rounded-md bg-neutral-100 text-[9px] font-bold text-neutral-500'>{index + 1}</span>
-                                <p className='min-w-0 flex-1 text-[11px] font-semibold text-neutral-700'>{field.label}</p>
-                                <span className='rounded-md bg-neutral-50 px-2 py-1 text-[9px] text-neutral-400'>{field.type}</span>
-                                <span className={`w-12 text-right text-[9px] font-bold ${field.required ? 'text-amber-700' : 'text-neutral-400'}`}>{field.required ? 'Wajib' : 'Opsional'}</span>
+                ) : messages.length === 0 ? (
+                    <div className='py-8 text-center text-xs text-neutral-400'>
+                        Belum ada pesan masuk dari pengunjung.
+                    </div>
+                ) : (
+                    <div className='divide-y divide-neutral-100'>
+                        {messages.map((msg) => (
+                            <div key={msg.id} className='flex flex-col gap-2 py-3 sm:flex-row sm:items-start sm:justify-between'>
+                                <div className='space-y-1'>
+                                    <div className='flex items-center gap-2'>
+                                        <span className='text-xs font-bold text-neutral-800'>{msg.name}</span>
+                                        <span className='text-[10px] text-neutral-400'>• {msg.email}</span>
+                                        {msg.phone && <span className='text-[10px] text-neutral-400'>• {msg.phone}</span>}
+                                    </div>
+                                    <p className='text-[11px] font-semibold text-amber-800'>{msg.subject}</p>
+                                    <p className='text-xs leading-relaxed text-neutral-600'>{msg.message}</p>
+                                    <p className='text-[9px] text-neutral-400'>
+                                        {new Date(msg.createdAt).toLocaleString('id-ID')}
+                                    </p>
+                                </div>
+                                <button
+                                    onClick={() => {
+                                        if (confirm('Hapus pesan ini?')) {
+                                            deleteMessageMutation.mutate(msg.id)
+                                        }
+                                    }}
+                                    aria-label='Hapus pesan'
+                                    className='flex h-7 w-7 shrink-0 items-center justify-center rounded-lg text-neutral-400 hover:bg-rose-50 hover:text-rose-600 transition cursor-pointer'
+                                >
+                                    <BsTrash className='text-xs' />
+                                </button>
                             </div>
                         ))}
                     </div>
-                </article>
+                )}
             </section>
 
-            <Modal key='contact-update-modal' size='md' openModal={modal} setOpenModal={setModal} color='primary' title='Perbarui Data Kontak'>
+            {/* Modal Perbarui Kontak */}
+            <Modal size='md' openModal={modal} setOpenModal={setModal} color='primary' title='Perbarui Data Kontak Toko'>
                 <div className='flex flex-col gap-2 px-3 py-5'>
-                    <div className='grid w-full grid-cols-1 gap-2 sm:grid-cols-2'>
+                    <InputField
+                        title='Nama Toko / Usaha'
+                        type='text'
+                        value={draft.storeName}
+                        onChange={(v) => setDraft((p) => ({ ...p, storeName: v as string }))}
+                    />
+
+                    <InputtextArea
+                        title='Alamat Lengkap'
+                        value={draft.address}
+                        onChange={(v) => setDraft((p) => ({ ...p, address: v as string }))}
+                    />
+
+                    <div className='grid grid-cols-1 gap-2 sm:grid-cols-2'>
                         <InputField
-                            title='Judul'
+                            title='Nomor Telepon'
                             type='text'
-                            value={draft.hero.title}
-                            onChange={(value) => setDraft((current) => ({ ...current, hero: { ...current.hero, title: value as string } }))}
+                            value={draft.phone}
+                            onChange={(v) => setDraft((p) => ({ ...p, phone: v as string }))}
                         />
                         <InputField
-                            title='Subjudul'
-                            type='text'
-                            value={draft.hero.subtitle}
-                            onChange={(value) => setDraft((current) => ({ ...current, hero: { ...current.hero, subtitle: value as string } }))}
+                            title='Email'
+                            type='email'
+                            value={draft.email || ''}
+                            onChange={(v) => setDraft((p) => ({ ...p, email: v as string }))}
                         />
                     </div>
 
-                    <div className='w-full'>
-                        <InputtextArea title='Alamat' value={draft.address} onChange={(value) => updateField('address', value as string)} />
-                    </div>
-
-                    <div className='grid w-full grid-cols-1 gap-2 sm:grid-cols-2'>
-                        <InputField title='Telepon' type='text' value={draft.phone} onChange={(value) => updateField('phone', value as string)} />
-                        <InputField title='Email' type='email' value={draft.email} onChange={(value) => updateField('email', value as string)} />
-                    </div>
-
-                    <div className='w-full'>
-                        <InputField title='Jam operasional' type='text' value={draft.operationalDays} onChange={(value) => updateField('operationalDays', value as string)} />
-                    </div>
-
-                    <div className='mt-2 border-t border-neutral-100 pt-3'>
-                        <p className='text-sm font-bold text-neutral-700'>Lokasi pada peta</p>
-                        <p className='mt-0.5 text-[10px] text-neutral-400'>Koordinat titik lokasi yang ditampilkan pada Google Maps.</p>
-                    </div>
-
-                    <div className='grid w-full grid-cols-1 gap-2 sm:grid-cols-2'>
-                        <InputField title='Latitude' type='number' value={draft.latitude} onChange={(value) => updateField('latitude', Number(value))} />
-                        <InputField title='Longitude' type='number' value={draft.longitude} onChange={(value) => updateField('longitude', Number(value))} />
+                    <div className='grid grid-cols-1 gap-2 sm:grid-cols-2'>
+                        <InputField
+                            title='Jam Operasional'
+                            type='text'
+                            value={draft.openHours || ''}
+                            onChange={(v) => setDraft((p) => ({ ...p, openHours: v as string }))}
+                        />
+                        <InputField
+                            title='Link Google Maps'
+                            type='text'
+                            value={draft.mapsUrl || ''}
+                            onChange={(v) => setDraft((p) => ({ ...p, mapsUrl: v as string }))}
+                        />
                     </div>
                 </div>
 
                 <div className='mx-3 mb-3 flex justify-end gap-2 border-y-[0.1px] border-black/20 py-2'>
-                    <div className='w-25'><Button color='primary' onClick={saveData}>Simpan</Button></div>
-                    <div className='w-25'><Button color='danger' onClick={() => setModal(false)}>Batal</Button></div>
+                    <div className='w-25'>
+                        <Button color='primary' onClick={handleSave}>
+                            Simpan
+                        </Button>
+                    </div>
+                    <div className='w-25'>
+                        <Button color='danger' onClick={() => setModal(false)}>
+                            Batal
+                        </Button>
+                    </div>
                 </div>
             </Modal>
         </main>
