@@ -1,13 +1,35 @@
 'use client'
 
-import React from 'react'
 import Image from 'next/image'
 import { useQuery } from '@tanstack/react-query'
 import { useDataStore } from '@/stores/dataStore'
 import { fetchApi } from '@/lib/apiFetch'
-import { PiMapPinLineDuotone, PiEnvelopeDuotone, PiPhoneDuotone, PiCoffeeDuotone, PiPlantDuotone, PiHandshakeDuotone } from 'react-icons/pi'
+import {
+    PiCoffeeDuotone,
+    PiEnvelopeDuotone,
+    PiHandshakeDuotone,
+    PiMapPinLineDuotone,
+    PiPhoneDuotone,
+    PiPlantDuotone,
+    PiQuotesFill,
+} from 'react-icons/pi'
 
-const defaultProfile = {
+interface CompanyProfile {
+    brand: string
+    quotes: string
+    description: string
+    detail: string
+    email?: string | null
+    phone?: string | null
+    address?: string | null
+    file?: string | null
+}
+
+interface CompanyProfileResponse {
+    data?: CompanyProfile[]
+}
+
+const defaultProfile: CompanyProfile = {
     brand: 'Kopi Tolaki',
     quotes: 'Menghadirkan Cita Rasa Otentik Tanah Tolaki untuk Nusantara',
     description: 'Kopi Tolaki adalah gerakan bersama untuk mengangkat potensi biji kopi lokal Sulawesi Tenggara ke panggung nasional dan internasional. Kami memadukan kearifan tradisi leluhur masyarakat Tolaki dengan teknologi pemrosesan kopi modern yang ramah lingkungan.',
@@ -20,184 +42,163 @@ const defaultProfile = {
 
 const pillars = [
     {
-        icon: <PiCoffeeDuotone className='text-[30px] text-amber-700' />,
+        icon: <PiCoffeeDuotone className='primary-color text-[50px]' />,
         title: 'Kualitas Premium',
-        desc: 'Biji kopi pilihan dipetik merah secara selektif, diproses dengan standar spesialti internasional.',
-        bg: 'bg-amber-50 border-amber-100',
+        desc: 'Biji kopi pilihan dipetik merah secara selektif dan diproses dengan standar tinggi.',
     },
     {
-        icon: <PiPlantDuotone className='text-[30px] text-emerald-700' />,
+        icon: <PiPlantDuotone className='primary-color text-[50px]' />,
         title: 'Ramah Lingkungan',
-        desc: 'Pertanian berkelanjutan yang menjaga ekosistem hutan dan keanekaragaman hayati Sulawesi Tenggara.',
-        bg: 'bg-emerald-50 border-emerald-100',
+        desc: 'Pertanian berkelanjutan yang menjaga ekosistem dan kekayaan alam Sulawesi Tenggara.',
     },
     {
-        icon: <PiHandshakeDuotone className='text-[30px] text-sky-700' />,
+        icon: <PiHandshakeDuotone className='primary-color text-[50px]' />,
         title: 'Kemitraan Adil',
-        desc: 'Harga yang adil dan transparan bagi petani mitra agar kesejahteraan tumbuh bersama.',
-        bg: 'bg-sky-50 border-sky-100',
+        desc: 'Hubungan transparan bersama petani agar kesejahteraan dapat tumbuh secara setara.',
     },
 ]
 
 const ContentProfile = () => {
     const url = useDataStore((state) => state.url)
 
-    const { data: response, isLoading } = useQuery<any>({
+    const { data: response, isLoading } = useQuery<CompanyProfileResponse>({
         queryFn: () => fetchApi(`${url}/company-profile/read`),
         queryKey: ['public-company-profile'],
     })
 
     const profile = response?.data?.[0] || defaultProfile
-    const imageSrc = profile.file
-        ? `${url}/uploads/company/${profile.file}`
-        : null
+    const imageSrc = profile.file ? `${url}/uploads/company/${profile.file}` : null
 
     if (isLoading) {
         return (
-            <div className='space-y-6 animate-pulse'>
-                <div className='h-52 bg-neutral-200 rounded-2xl' />
-                <div className='h-32 bg-neutral-200 rounded-2xl' />
-                <div className='h-48 bg-neutral-200 rounded-2xl' />
+            <div className='animate-pulse space-y-6'>
+                <div className='h-72 rounded-2xl bg-neutral-200' />
+                <div className='h-56 rounded-2xl bg-neutral-200' />
             </div>
         )
     }
 
     return (
-        <div className='space-y-12 text-neutral-800'>
-
-            {/* ── Section 1: Identity — logo + brand name + description ── */}
-            <div className='flex flex-col md:flex-row gap-8 items-center md:items-start'>
-                <div className='shrink-0'>
-                    <div className='relative h-36 w-36 rounded-full overflow-hidden border-4 border-amber-200 shadow-lg bg-amber-50'>
+        <div className='text-neutral-700'>
+            <section>
+                <p className='title-header-3'>Tentang Anoa Coffee</p>
+                <div className='grid grid-cols-1 items-stretch gap-6 pt-3 lg:grid-cols-12 lg:gap-10'>
+                    <div className='relative col-span-1 min-h-72 overflow-hidden rounded-2xl border border-neutral-200 bg2 lg:col-span-5'>
                         {imageSrc ? (
-                            <Image alt={profile.brand} src={imageSrc} fill className='object-contain p-3' />
+                            <Image
+                                alt={profile.brand}
+                                src={imageSrc}
+                                fill
+                                sizes='(max-width: 1024px) 100vw, 42vw'
+                                className='object-cover'
+                            />
                         ) : (
-                            <Image alt='Logo' src='/images/logo_dark.png' fill className='object-contain p-4' />
+                            <Image
+                                alt='Logo Anoa Coffee'
+                                src='/images/logo_dark.png'
+                                fill
+                                sizes='(max-width: 1024px) 100vw, 42vw'
+                                className='object-contain p-14'
+                            />
                         )}
+                        <div className='absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-black/45 to-transparent' />
+                        <p className='absolute bottom-4 left-5 text-[10px] font-bold uppercase tracking-[0.18em] text-white'>
+                            Kopi asli Sulawesi Tenggara
+                        </p>
+                    </div>
+
+                    <div className='col-span-1 flex flex-col justify-center lg:col-span-7'>
+                        <p className='title-text color-main'>SIAPA KAMI</p>
+                        <h2 className='mt-1 text-[32px] font-bold leading-tight text-neutral-800'>{profile.brand}</h2>
+                        <p className='mt-4 text-[13px] leading-7 text-neutral-600 sm:text-sm'>{profile.description}</p>
+                        <blockquote className='relative mt-6 border-l-4 border-amber-600 bg-white/40 px-5 py-4'>
+                            <PiQuotesFill className='absolute right-4 top-3 text-3xl text-amber-700/15' />
+                            <p className='relative text-base font-semibold italic leading-relaxed text-neutral-700'>
+                                “{profile.quotes}”
+                            </p>
+                            <footer className='mt-2 text-[10px] font-bold uppercase tracking-wider text-amber-800'>
+                                {profile.brand}
+                            </footer>
+                        </blockquote>
                     </div>
                 </div>
-                <div className='flex-1 text-center md:text-left space-y-3'>
-                    <p className='text-xs font-semibold uppercase tracking-[0.2em] text-amber-700'>
-                        Profil Perusahaan
-                    </p>
-                    <h1 className='text-3xl sm:text-4xl font-bold text-neutral-900 leading-tight'>
-                        {profile.brand}
-                    </h1>
-                    <p className='text-sm text-neutral-500 leading-relaxed max-w-xl mx-auto md:mx-0'>
-                        {profile.description}
-                    </p>
-                </div>
-            </div>
+            </section>
 
-            {/* ── Section 2: Quote pull-out ── */}
-            <blockquote className='border-l-4 border-amber-600 pl-6 py-2'>
-                <p className='text-lg sm:text-xl font-semibold italic text-neutral-700 leading-snug'>
-                    &ldquo;{profile.quotes}&rdquo;
-                </p>
-                <footer className='mt-2 text-xs font-bold uppercase tracking-wider text-amber-700'>
-                    — {profile.brand}
-                </footer>
-            </blockquote>
-
-            {/* ── Section 3: Editorial image + story ── */}
-            <div className='grid grid-cols-1 lg:grid-cols-2 gap-8 items-center'>
-                <div className='relative h-72 lg:h-96 rounded-2xl overflow-hidden shadow-md'>
-                    <Image
-                        src='/images/about.jpg'
-                        alt='Petani Kopi Tolaki'
-                        fill
-                        className='object-cover'
-                    />
-                    <div className='absolute inset-0 bg-gradient-to-t from-black/60 to-transparent' />
-                    <span className='absolute bottom-4 left-4 text-xs text-white/80 font-semibold uppercase tracking-widest'>
-                        Dari Kebun ke Cangkir
-                    </span>
-                </div>
-                <div className='space-y-4'>
-                    <p className='text-xs font-semibold uppercase tracking-[0.2em] text-amber-700'>
-                        Perjalanan Kami
-                    </p>
-                    <h2 className='text-2xl font-bold text-neutral-800 leading-snug'>
-                        Berakar dari Tradisi,<br />Tumbuh Bersama Petani
-                    </h2>
-                    <div
-                        className='text-sm leading-7 text-neutral-600 [&>p+p]:mt-4'
-                        dangerouslySetInnerHTML={{ __html: profile.detail }}
-                    />
-                </div>
-            </div>
-
-            {/* ── Section 4: Values pillars ── */}
-            <div>
-                <p className='text-xs font-semibold uppercase tracking-[0.2em] text-amber-700 mb-5'>
-                    Nilai-Nilai Kami
-                </p>
-                <div className='grid grid-cols-1 sm:grid-cols-3 gap-5'>
-                    {pillars.map((p, i) => (
+            <section className='mt-12 border-t border-neutral-300 pt-10'>
+                <p className='title-text color-main'>PERJALANAN KAMI</p>
+                <div className='mt-2 grid grid-cols-1 items-center gap-6 lg:grid-cols-2 lg:gap-12'>
+                    <div>
+                        <h2 className='title-header-3 text-neutral-800'>Berakar dari Tradisi, Tumbuh Bersama Petani</h2>
                         <div
-                            key={i}
-                            className={`border rounded-2xl p-5 space-y-2 ${p.bg}`}
+                            className='mt-3 text-[13px] leading-7 text-neutral-600 sm:text-sm [&>p+p]:mt-3'
+                            dangerouslySetInnerHTML={{ __html: profile.detail }}
+                        />
+                    </div>
+                    <div className='relative min-h-72 overflow-hidden rounded-2xl border border-neutral-200 shadow-sm lg:min-h-80'>
+                        <Image
+                            src='/images/about.jpg'
+                            alt='Petani Kopi Tolaki'
+                            fill
+                            sizes='(max-width: 1024px) 100vw, 50vw'
+                            className='object-cover'
+                        />
+                        <div className='absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent' />
+                        <div className='absolute bottom-5 left-5 text-white'>
+                            <p className='text-[10px] font-bold uppercase tracking-wider text-amber-300'>Dari Kebun ke Cangkir</p>
+                            <p className='mt-1 text-sm font-semibold'>Cerita dari tanah Sulawesi Tenggara</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section className='mt-12 rounded-2xl bg1 px-5 py-8 lg:px-8'>
+                <p className='title-text color-main'>NILAI-NILAI KAMI</p>
+                <h2 className='title-header-3 text-neutral-800'>Prinsip di Setiap Proses</h2>
+                <p className='mt-1 text-[13px] text-neutral-500'>Dari kebun hingga produk sampai ke tangan Anda, tiga nilai ini selalu menjadi kompas kami.</p>
+
+                <div className='mt-5 grid grid-cols-1 md:grid-cols-3'>
+                    {pillars.map((pillar, index) => (
+                        <div
+                            key={pillar.title}
+                            className={`flex flex-col items-center px-5 py-6 text-center ${index === 1 ? 'border-y border-neutral-300 md:border-x md:border-y-0' : ''}`}
                         >
-                            <div className='h-11 w-11 flex items-center justify-center rounded-xl bg-white/80 border border-white shadow-sm'>
-                                {p.icon}
-                            </div>
-                            <p className='font-bold text-sm text-neutral-800 pt-1'>{p.title}</p>
-                            <p className='text-xs text-neutral-500 leading-relaxed'>{p.desc}</p>
+                            {pillar.icon}
+                            <p className='mt-2 text-sm font-bold text-neutral-700'>{pillar.title}</p>
+                            <p className='mt-1 max-w-xs text-[12px] leading-relaxed text-neutral-500'>{pillar.desc}</p>
                         </div>
                     ))}
                 </div>
-            </div>
+            </section>
 
-            {/* ── Section 5: Contact ── */}
-            <div className='border-t border-neutral-200 pt-8'>
-                <p className='text-xs font-semibold uppercase tracking-[0.2em] text-amber-700 mb-5'>
-                    Hubungi Kami
-                </p>
-                <div className='grid grid-cols-1 sm:grid-cols-3 gap-6'>
-                    <a
-                        href={`mailto:${profile.email || 'info@kopitolaki.id'}`}
-                        className='flex items-start gap-3 group'
-                    >
-                        <div className='shrink-0 mt-0.5 h-9 w-9 flex items-center justify-center rounded-lg bg-amber-50 group-hover:bg-amber-100 transition-colors'>
-                            <PiEnvelopeDuotone className='text-amber-700 text-lg' />
-                        </div>
+            <section className='mt-12'>
+                <div className='rounded-2xl border border-neutral-300 bg2 p-5 lg:p-8'>
+                    <div className='grid grid-cols-1 gap-6 lg:grid-cols-3'>
                         <div>
-                            <p className='text-[10px] font-bold uppercase tracking-wider text-neutral-400'>Email</p>
-                            <p className='text-xs font-semibold text-neutral-700 break-all'>
-                                {profile.email || 'info@kopitolaki.id'}
-                            </p>
+                            <p className='title-text color-main'>HUBUNGI KAMI</p>
+                            <h2 className='title-header-3 text-neutral-800'>Mari Terhubung</h2>
+                            <p className='mt-2 text-[12px] leading-relaxed text-neutral-500'>Punya pertanyaan tentang produk atau ingin bertumbuh bersama kami? Kami senang mendengarnya.</p>
                         </div>
-                    </a>
 
-                    <a
-                        href={`tel:${(profile.phone || '+6281234567890').replace(/[\s\-]/g, '')}`}
-                        className='flex items-start gap-3 group'
-                    >
-                        <div className='shrink-0 mt-0.5 h-9 w-9 flex items-center justify-center rounded-lg bg-emerald-50 group-hover:bg-emerald-100 transition-colors'>
-                            <PiPhoneDuotone className='text-emerald-700 text-lg' />
-                        </div>
-                        <div>
-                            <p className='text-[10px] font-bold uppercase tracking-wider text-neutral-400'>Telepon / WA</p>
-                            <p className='text-xs font-semibold text-neutral-700'>
-                                {profile.phone || '+62 812-3456-7890'}
-                            </p>
-                        </div>
-                    </a>
-
-                    <div className='flex items-start gap-3'>
-                        <div className='shrink-0 mt-0.5 h-9 w-9 flex items-center justify-center rounded-lg bg-sky-50'>
-                            <PiMapPinLineDuotone className='text-sky-700 text-lg' />
-                        </div>
-                        <div>
-                            <p className='text-[10px] font-bold uppercase tracking-wider text-neutral-400'>Lokasi</p>
-                            <p className='text-xs font-semibold text-neutral-700'>
-                                {profile.address || 'Kendari, Sulawesi Tenggara'}
-                            </p>
+                        <div className='grid grid-cols-1 gap-3 sm:grid-cols-3 lg:col-span-2'>
+                            <a href={`mailto:${profile.email || 'info@kopitolaki.id'}`} className='rounded-xl border border-neutral-300 bg-white/50 p-4 transition hover:bg-white'>
+                                <PiEnvelopeDuotone className='text-2xl text-amber-700' />
+                                <p className='mt-4 text-[10px] font-bold uppercase tracking-wider text-neutral-400'>Email</p>
+                                <p className='mt-1 break-all text-[12px] font-semibold text-neutral-700'>{profile.email || 'info@kopitolaki.id'}</p>
+                            </a>
+                            <a href={`tel:${(profile.phone || '+6281234567890').replace(/[\s\-]/g, '')}`} className='rounded-xl border border-neutral-300 bg-white/50 p-4 transition hover:bg-white'>
+                                <PiPhoneDuotone className='text-2xl text-emerald-700' />
+                                <p className='mt-4 text-[10px] font-bold uppercase tracking-wider text-neutral-400'>Telepon / WA</p>
+                                <p className='mt-1 text-[12px] font-semibold text-neutral-700'>{profile.phone || '+62 812-3456-7890'}</p>
+                            </a>
+                            <div className='rounded-xl border border-neutral-300 bg-white/50 p-4'>
+                                <PiMapPinLineDuotone className='text-2xl text-sky-700' />
+                                <p className='mt-4 text-[10px] font-bold uppercase tracking-wider text-neutral-400'>Lokasi</p>
+                                <p className='mt-1 text-[12px] font-semibold leading-relaxed text-neutral-700'>{profile.address || 'Kendari, Sulawesi Tenggara'}</p>
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
-
+            </section>
         </div>
     )
 }

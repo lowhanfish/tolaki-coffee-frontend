@@ -50,6 +50,8 @@ const ListNews = () => {
                 `${url}/news/read?skip=${(page - 1) * limit}&limit=${limit}`,
             ),
         queryKey: ['public-news', page, limit],
+        staleTime: 60 * 1000,
+        retry: 1,
     })
 
     const hasApiData = response?.data && response.data.length > 0

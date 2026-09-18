@@ -9,7 +9,7 @@ const page = () => {
                 <HeaderPage image={`/images/header_product2.webp`}>
                     <div className='z-2 flex flex-col items-center justify-center'>
                         <p className='text-[45px]'>Anoa Coffee</p>
-                        <p className='-mt-2'>Product kami</p>
+                        <p className='-mt-2'>Kabar & Cerita Terkini</p>
                     </div>
                 </HeaderPage>
             </div>
