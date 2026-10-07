@@ -13,7 +13,9 @@ const layout = ({ children }: childrenProps) => {
             <div>
                 <NavBar />
             </div>
-            {children}
+            <div>
+                {children}
+            </div>
             <div>
                 <Footer />
             </div>

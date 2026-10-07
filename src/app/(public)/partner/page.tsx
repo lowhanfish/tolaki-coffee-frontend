@@ -14,7 +14,7 @@ const page = () => {
         <div className='bg relative'>
             <div className=''>
                 <HeaderPage>
-                    <div className='z-2 w-full px-5 lg:px-20 flex flex-col items-center justify-center xl:justify-start xl:items-start'>
+                    <div className='z-2 w-full px-5 lg:px-45 flex flex-col items-center justify-center xl:justify-start xl:items-start'>
                         <div className='w-full grid grid-cols-1 xl:grid-cols-2'>
                             <div>
                                 <p className='title-text color-main'>PETANI DAN KEMITRAAN</p>
