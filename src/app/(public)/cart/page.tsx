@@ -52,7 +52,6 @@ const CartPage = () => {
             alert('Harap lengkapi nama, nomor telepon, dan alamat pengiriman.')
             return
         }
-
         setLoading(true)
         try {
             const payload = {
@@ -78,7 +77,7 @@ const CartPage = () => {
             })
 
             setCompletedOrder(response)
-            clearCart()
+            // clearCart()
         } catch (error: any) {
             console.error('Checkout error:', error)
             alert(error.message || 'Gagal membuat pesanan. Silakan coba lagi.')

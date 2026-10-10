@@ -41,7 +41,7 @@ export default function RootLayout({
           <AuthProvider>
             {children}
             <div className="fixed bottom-3 right-3 z-10">
-              <CartButton />
+              {/* <CartButton /> */}
             </div>
           </AuthProvider>
         </TanstackQuery>

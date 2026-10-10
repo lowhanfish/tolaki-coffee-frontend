@@ -35,6 +35,7 @@ const Page = () => {
         title: "",
         price: 0,
         unit_price: "",
+        stock: 0,
         description: "",
         files: [],
     })
@@ -71,6 +72,7 @@ const Page = () => {
             title: "",
             price: 0,
             unit_price: "",
+            stock: 0,
             description: "",
             files: [],
         })
@@ -90,6 +92,7 @@ const Page = () => {
             title: selectedProduct.title,
             price: Number(selectedProduct.price),
             unit_price: selectedProduct.unit_price,
+            stock: selectedProduct.stock,
             description: selectedProduct.description || "",
             files: [],
         })

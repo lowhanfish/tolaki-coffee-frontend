@@ -39,6 +39,7 @@ const Create = ({ modal, SetModal, form, setForm, emptyForm, isUpdate, productId
             formData.append('title', form.title)
             formData.append('price', String(form.price))
             formData.append('unit_price', form.unit_price)
+            formData.append('stock', String(form.stock))
             formData.append('description', form.description || '')
 
             if (form.files && form.files.length > 0) {
@@ -82,7 +83,7 @@ const Create = ({ modal, SetModal, form, setForm, emptyForm, isUpdate, productId
 
     return (
         <Modal
-            size="md"
+            size="lg"
             openModal={modal}
             setOpenModal={SetModal}
             color="primary"
@@ -113,6 +114,14 @@ const Create = ({ modal, SetModal, form, setForm, emptyForm, isUpdate, productId
                         value={form.unit_price}
                         onChange={(e) => SetObjForm(e as string, "unit_price")}
                         placholder="Contoh: 250gr / Pack"
+                    />
+
+                    <InputField
+                        title="Jumlah Stock"
+                        type="number"
+                        value={form.stock as number}
+                        onChange={(e) => SetObjForm(e as string, "stock")}
+                        placholder="Contoh: 100"
                     />
                 </div>
 

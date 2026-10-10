@@ -12,6 +12,7 @@ export interface ProductResponseInterface {
   title: string;
   price: number | string;
   unit_price: string;
+  stock: number;
   description?: string | null;
   createdAt: string;
   updatedAt: string;
@@ -32,6 +33,7 @@ export interface ProductCreateInterface {
   title: string;
   price: number;
   unit_price: string;
+  stock: number;
   description: string;
   files: File[];
 }
